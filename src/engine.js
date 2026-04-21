@@ -326,7 +326,6 @@ DSVis.Engine = class {
         const listeners = this.EventListeners;
         if (!listeners[id]) listeners[id] = {};
         const elem = this.Toolbar[id];
-        if (!elem) return;
         const oldHandler = listeners[id][type];
         if (oldHandler) elem.removeEventListener(type, oldHandler);
         listeners[id][type] = handler;
@@ -339,7 +338,6 @@ DSVis.Engine = class {
         const listeners = this.EventListeners;
         for (const id in listeners) {
             const elem = this.Toolbar[id];
-            if (!elem) continue;
             elem.disabled = true;
             for (const type in listeners[id]) elem.removeEventListener(type, listeners[id][type]);
             listeners[id] = {};
