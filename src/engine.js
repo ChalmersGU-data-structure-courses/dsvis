@@ -348,20 +348,15 @@ DSVis.Engine = class {
     ///////////////////////////////////////////////////////////////////////////////
     // Executing the actions
 
-    async submit(method, ...values) {
+    async submit(method, val) {
         try {
-            if (values.length === 1) {
-                values = values[0];
-            }
-            if (values?.value) {
-                const field = values;
-                values = field.value;
+            if (val?.value) {
+                const field = val;
+                val = field.value;
                 field.value = "";
             }
-            values = DSVis.parseValues(values);
-            if (values != null) {
-                await this.execute(method, values);
-            }
+            const values = DSVis.parseValues(val);
+            if (values) await this.execute(method, values);
         } catch (error) {
             console.error(error);
         }
