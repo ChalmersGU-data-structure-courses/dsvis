@@ -1,239 +1,269 @@
 import { MessagesObject, NBSP } from "~/engine";
-import { compare, updateDefault } from "~/helpers";
-import { DSArray } from "~/objects/dsarray";
-import { TextCircle } from "~/objects/text-circle";
+import { compare, finishAllAnimationsForElement, updateDefault } from "~/helpers";
 import { Sorter } from "~/sorting";
-import { Sort, SortMessages } from "./sort";
+import { BaseSorter, SortMessages } from "./BaseSorter";
+import { StapleArray } from "~/objects/staple-array";
+import { ValueStaple } from "~/objects/value-staple";
+import { RecursiveSortingGeneralControls } from "~/general-controls/recursive-sorting-general-controls";
 
 export const MergeSortMessages = {
     sort: {
         split: (a: string, b: string) => `Split ${a} from ${b}`,
+        merge: `Merge subarrays`,
         move: (a: string) => `Move ${a} to upper array`,
         foundNewMin: (a: string) => `Found a smaller value ${a}`,
+        mergeComplete: `Subarrays successfully merged`,
+        singleElement: (element: string) =>
+            `Array has single element ${element}, is already sorted`,
     },
 } as const satisfies MessagesObject;
 
-export class MergeSort extends Sort implements Sorter {
-    mergeArrayList: DSArray[] = [];
+export class MergeSort extends BaseSorter implements Sorter {
+    VERTICAL_RECURSION_SEPARATION = 10; // TODO: Depend on object size?
+
     messages: MessagesObject = updateDefault(MergeSortMessages, SortMessages);
+    isFollowingRecursion: boolean = true;
+
+    constructor(containerSelector: string) {
+        super(containerSelector);
+
+        this.generalControls = new RecursiveSortingGeneralControls(this.container, this);
+    }
+
     async sort() {
         //Check if array is empty
-        const sortSize = this.sortArray.getSize();
+        const sortSize = this.sortArray.length();
         if (sortSize <= 1) {
             await this.pause("general.empty");
             return;
         }
-        //Delete old merge arrays
-        for (let i = 0; i < this.mergeArrayList.length; i++) {
-            this.mergeArrayList[i].remove();
-        }
-        //Reset variables
-        this.compensate = 0;
-        this.mergeArrayList = [];
 
-        //Remove empty space from the end of the array
-        this.sortArray.getValues();
-        if (this.sortArray.getValue(this.sortArray.getSize() - 1) === NBSP) {
-            this.sortArray.setSize(this.sortArray.getSize() - 1);
-        }
-        //Set all elements to disabled to grey them out
-        for (let i = 0; i < this.sortArray.getSize(); i++) {
-            this.sortArray.setDisabled(i, true);
-        }
-        //Centers the array
-        this.sortArray.center(
-            this.getTreeRoot()[0],
-            this.getTreeRoot()[1] + this.$Svg.margin * 4
-        );
         //Start recursive calls to mergeSort
-        await this.mergeSort(this.sortArray, 0, this.sortArray.getSize(), 1);
+        this.sortArray = await this.mergeSort(this.sortArray, 1);
+
         //Finish the algorithm
         await this.pause("general.finished");
+        for (let i = 0; i < this.sortArray.length(); i++) {
+            this.sortArray.clearStapleHighlight(i, "all");
+        }
     }
-    async mergeSort(
-        arr: DSArray,
-        left: number,
-        right: number,
-        iteration: number
-    ) {
+
+    async mergeSort(arr: StapleArray, iteration: number) {
         {
-            //Check if the array is empty
-            if (left >= right) {
-                return;
+            if (arr.length() === 1) {
+                arr.setStapleHighlight(0, 'success')
+                await this.pause("sort.singleElement", arr.getValue(0))
+                return arr;
             }
-            //Split the array in half
-            const mid = Math.ceil(left + (right - left) / 2);
-            const yCenter = this.getTreeRoot()[1];
-            const baseY = this.$Svg.margin * 4;
-            const CX = arr.getCX(0);
 
-            //When the array is larger than 2 elements split into two arrays
-            if (arr.getSize() > 2) {
-                const mergeArray1 = this.Svg.put(
-                    new DSArray(mid - left, this.getObjectSize())
-                ).init(mid - left, CX, arr.cy());
-                for (let k = 0; k < mid; k++) {
-                    mergeArray1.setValue(k, arr.getValue(k));
-                }
-                this.animate(mergeArray1)
-                    .cx(CX - (arr.engine().getObjectSize() * 2) / iteration)
-                    .cy(
-                        yCenter +
-                            (baseY * iteration * this.getObjectSize()) / this.baseSize +
-                            baseY
-                    );
-                await this.pause(
-                    "sort.split",
-                    mergeArray1.getValues(),
-                    arr.getValues()
-                );
+            //When the array is larger than 1 element split into two arrays and sort recusively
+            if (arr.length() > 1) {
+                const mid = Math.ceil(arr.length() / 2);
 
-                const mergeArray2 = this.Svg.put(
-                    new DSArray(right - mid, this.getObjectSize())
-                ).init(right - mid, arr.getCX(mid), arr.cy());
-                for (let k = 0; k + mid < right; k++) {
-                    mergeArray2.setValue(k, arr.getValue(k + mid));
-                }
-                this.animate(mergeArray2)
-                    .cx(
-                        arr.getCX(arr.getSize() - 1) +
-                            (arr.engine().getObjectSize() * 2) / iteration
+                // Create a copy of the left part of the array an place it on top of the existing
+                let leftSubArr: StapleArray = this.Svg.put(
+                    new StapleArray(
+                        arr.getValues().slice(0, mid),
+                        this.STAPLE_MAX_HEIGHT,
+                        this.getObjectSize(),
+                        arr.getMaxValue()
                     )
-                    .cy(
-                        yCenter +
-                            (baseY * iteration * this.getObjectSize()) / this.baseSize +
-                            baseY
-                    );
+                ).init(arr.cx() - Number(arr.width()) / 4, arr.cy());
+
+                // Mark left portion of parent array as disabled
+                arr.setStaplesDisabled(0, mid);
+
+                // Move the new array down and slightly to the left to show split step
+                const leftSubArrDeltaMove = { x: -this.getObjectSize(), y: Number(arr.height()) + this.VERTICAL_RECURSION_SEPARATION }
+                this.animate(leftSubArr)
+                    .dx(leftSubArrDeltaMove.x)
+                    .dy(leftSubArrDeltaMove.y);
+                
+                // Move the viewbox to follow recursion to the left
+                // Skip first iteration to prevent disjointed transition
+                if (this.isFollowingRecursion && iteration > 1)
+                    this.setViewBoxCenter(arr.cx(), arr.cy(), true)
+                                
                 await this.pause(
-                    "sort.split",
-                    mergeArray2.getValues(),
+                    "merge.split",
+                    leftSubArr.getValues(),
+                    arr.getValues()
+                );
+                
+                // Sort left subarray recursively
+                leftSubArr = await this.mergeSort(leftSubArr, iteration + 1);
+                
+                // Move the viewbox to follow recursion to the right
+                if (this.isFollowingRecursion)
+                    this.setViewBoxCenter(arr.cx(), arr.cy(), true)
+
+                if (leftSubArr.length() > 1) {
+                    await this.pause(undefined);
+                }
+                                
+                // Create a copy of the right part of the array an place it on top of the existing
+                let rightSubArr: StapleArray = this.Svg.put(
+                    new StapleArray(
+                        arr.getValues().slice(mid),
+                        this.STAPLE_MAX_HEIGHT,
+                        this.getObjectSize(),
+                        arr.getMaxValue()
+                    )
+                ).init(arr.cx() + Number(arr.width()) / 4, arr.cy());
+
+                // Mark right portion of parent array as disabled
+                arr.setStaplesDisabled(mid);
+
+                // Move the new array down and slightly to the right to show split step
+                const rightSubArrDeltaMove = { x: this.getObjectSize(), y: Number(arr.height()) + this.VERTICAL_RECURSION_SEPARATION }
+                this.animate(rightSubArr)
+                    .dx(rightSubArrDeltaMove.x)
+                    .dy(rightSubArrDeltaMove.y);
+                                
+                await this.pause(
+                    "merge.split",
+                    rightSubArr.getValues(),
                     arr.getValues()
                 );
 
-                //Push the new arrays to the mergeArrayList
-                this.mergeArrayList.push(mergeArray1);
-                this.mergeArrayList.push(mergeArray2);
+                // Sort right subarray recursively
+                rightSubArr = await this.mergeSort(rightSubArr, iteration + 1);
 
-                //Compensation to keep the array within the viewbox
-                if (mergeArray1.getCX(0) < this.$Svg.margin) {
-                    this.compensate =
-                        mergeArray1.getCX(0) * -1 + this.$Svg.margin;
-
-                    const sortArrayCenter = this.sortArray.getCX(
-                        this.sortArray.getSize() / 2
-                    );
-                    this.sortArray.center(
-                        sortArrayCenter + this.compensate,
-                        this.sortArray.cy()
-                    );
-
-                    for (let j = 0; j < this.mergeArrayList.length; j++) {
-                        const midPoint = this.mergeArrayList[j].getSize() / 2;
-                        const centerCords =
-                            this.mergeArrayList[j].getCX(midPoint);
-                        this.mergeArrayList[j].center(
-                            centerCords + this.compensate,
-                            this.mergeArrayList[j].cy()
-                        );
-                    }
+                // Move viewbox to follow merging subarrays
+                // If it is the first iteration, reset to starting position
+                if (this.isFollowingRecursion) {
+                    if (iteration === 1) 
+                        this.resetViewBoxPosition();
+                    else 
+                        this.setViewBoxCenter(arr.cx(), arr.cy(), true);
                 }
-
-                //Recursively call mergeSort on the new arrays
-                await this.mergeSort(mergeArray1, left, mid, iteration + 1);
-
-                await this.mergeSort(
-                    mergeArray2,
-                    0,
-                    right - mid,
-                    iteration + 1
-                );
-                //Merge the return of the two mergeSort calls
-                await this.merge(arr, mergeArray1, mergeArray2);
-            } else if (arr.getSize() === 2) {
-                //If the array is 2 elements, compare and swap them
-                await this.pause(
-                    "sort.compare",
-                    arr.getValue(0),
-                    arr.getValue(1)
-                );
-                if (arr.getValue(0) > arr.getValue(1)) {
-                    await this.swap(arr, 0, 1);
-                    arr.setIndexHighlight(0, false);
-                    arr.setIndexHighlight(1, false);
-                }
-                arr.setDisabled(0, false);
-                arr.setDisabled(1, false);
-            } else {
-                //If the array is 1 element, set it to enabled
-                arr.setDisabled(0, false);
+                
+                // Merge the two now sorted subarrays
+                return await this.merge(arr, leftSubArr, rightSubArr);
             }
+
+            throw new Error(`Could not mergeSort array: ${arr}`);
         }
     }
 
-    async merge(array: DSArray, subarray1: DSArray, subarray2: DSArray) {
-        let i;
-        let a1i = 0;
-        let a2i = 0;
-        //Empty the parent array
-        for (i = 0; i < array.getSize(); i++) {
-            array.setValue(i, NBSP);
+    async merge(
+        parentArr: StapleArray,
+        leftSubArr: StapleArray,
+        rightSubArr: StapleArray
+    ) {
+
+        // Remove the highlight that indicates that the arrays are sorted
+        for (let i = 0; i < leftSubArr.length(); i++) {
+            leftSubArr.clearStapleHighlight(i, "success")
         }
+        for (let i = 0; i < rightSubArr.length(); i++) {
+            rightSubArr.clearStapleHighlight(i, "success")
+        }
+        await this.pause("sort.merge")
+
+        let leftIndex = 0;
+        let rightIndex = 0;
+        
+        const mergedArrayValues: number[] = [];
+
+        // Save initial values for y for the subarrays, since they will change when moving the staples later
+        leftSubArr.remember("y", leftSubArr.y())
+        rightSubArr.remember("y", rightSubArr.y())
+
         //Merge the two subarrays into the parent array
-        for (i = 0; i < array.getSize(); i++) {
+        for (let i = 0; i < parentArr.length(); i++) {
+
+            // Highlight the staples that are being compared
+            if (leftIndex < leftSubArr.length()) {
+                leftSubArr.setStapleHighlight(leftIndex, "primary");
+            }
+            if (rightIndex < rightSubArr.length()) {
+                rightSubArr.setStapleHighlight(rightIndex, "primary");
+            }
+
             await this.pause(
                 "sort.compare",
-                a1i < subarray1.getSize()
-                    ? subarray1.getValue(a1i)
+                leftIndex < leftSubArr.length()
+                    ? leftSubArr.getValue(leftIndex)
                     : "empty array",
-                a2i < subarray2.getSize()
-                    ? subarray2.getValue(a2i)
+                rightIndex < rightSubArr.length()
+                    ? rightSubArr.getValue(rightIndex)
                     : "empty array"
             );
+
+            let sourceArr: StapleArray;
+            let sourceIndex: number;
+
+            // Determine which staple is smaller from the two subarrays
             if (
-                a2i >= subarray2.getSize() ||
-                (a1i < subarray1.getSize() &&
-                    compare(subarray1.getValue(a1i), subarray2.getValue(a2i)) <
-                        0)
+                rightIndex >= rightSubArr.length() ||
+                (leftIndex < leftSubArr.length() &&
+                compare(
+                    leftSubArr.getValue(leftIndex),
+                    rightSubArr.getValue(rightIndex)
+                ) <= 0)
             ) {
-                await this.pause("sort.move", subarray1.getValue(a1i));
-                //Move the value from the first subarray to the parent array
-                const svgValue = this.Svg.put(
-                    new TextCircle(
-                        subarray1.getValue(a1i),
-                        this.getObjectSize(),
-                        this.getStrokeWidth()
-                    )
-                ).init(subarray1.getCX(a1i), subarray1.cy());
-                this.animate(svgValue).center(array.getCX(i), array.cy());
-                await this.pause(undefined);
-                //Remove the text circle
-                svgValue.remove();
-                //Set the value to disabled and set the value in the parent array
-                subarray1.setDisabled(a1i, true);
-                array.setDisabled(i, false);
-                array.setValue(i, subarray1.getValue(a1i));
-                a1i++;
+                sourceArr = leftSubArr;
+                sourceIndex = leftIndex;
+                leftIndex++;
             } else {
-                await this.pause("sort.move", subarray2.getValue(a2i));
-                //Move the value from the second subarray to the parent array
-                const svgValue = this.Svg.put(
-                    new TextCircle(
-                        subarray2.getValue(a2i),
-                        this.getObjectSize(),
-                        this.getStrokeWidth()
-                    )
-                ).init(subarray2.getCX(a2i), subarray2.cy());
-                this.animate(svgValue).center(array.getCX(i), array.cy());
-                await this.pause(undefined);
-                //Remove the text circle
-                svgValue.remove();
-                //Set the value to disabled and set the value in the parent array
-                subarray2.setDisabled(a2i, true);
-                array.setDisabled(i, false);
-                array.setValue(i, subarray2.getValue(a2i));
-                a2i++;
+                sourceArr = rightSubArr;
+                sourceIndex = rightIndex;
+                rightIndex++;
             }
+            const stapleToInsert: ValueStaple = sourceArr.getStaple(sourceIndex);
+
+            mergedArrayValues.push(stapleToInsert.getValue())
+
+            const deltaX: number = parentArr.getStapleX(i) - sourceArr.getStapleX(sourceIndex);
+
+            // Use the stored value for y, since sourceArr.y() might have changed if one of the staples have been moved
+            const deltaY: number = Number(parentArr.y()) - Number(sourceArr.remember("y"));
+
+            // Remove comparison highlight and move the staple to the correct position in the parent array
+            this.animate(stapleToInsert).dmove(deltaX, deltaY)
+            sourceArr.clearStapleHighlight(sourceIndex, "primary")
+
+            // Hide the staple in the parent array to make the new one take its place
+            parentArr.$staples[i].hide()
+
+            await this.pause("sort.move", stapleToInsert.getValue())
         }
-        return array;
+
+        // Delete subarrays when all staples have been moved
+        finishAllAnimationsForElement(this.timeline, leftSubArr);
+        finishAllAnimationsForElement(this.timeline, rightSubArr);
+        leftSubArr.delete();
+        rightSubArr.delete();
+
+        // Create a new array with the values in the correct order and initialize it at the same position as the parent array
+        const mergedArray: StapleArray = this.Svg.put(new StapleArray(
+            mergedArrayValues,
+            this.STAPLE_MAX_HEIGHT,
+            this.getObjectSize(),
+            parentArr.getMaxValue()
+        )).init(parentArr.cx(), parentArr.cy())
+
+        // Highlight the merged array as completely sorted
+        for (let i = 0; i < mergedArray.length(); i++) {
+            mergedArray.setStapleHighlight(i, "success")
+        }
+        
+        // Delete the old parent array
+        parentArr.delete();
+
+        await this.pause("sort.mergeComplete")
+
+        return mergedArray;
+    }
+
+    followRecursion() {
+        this.disableViewBoxPanning();
+        this.isFollowingRecursion = true;
+    }
+
+    doNotFollowRecursion() {
+        this.enableViewBoxPanning();
+        this.isFollowingRecursion = false;
     }
 }

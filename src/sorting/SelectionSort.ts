@@ -1,7 +1,8 @@
 import { MessagesObject, NBSP } from "~/engine";
-import { compare, updateDefault } from "~/helpers";
+import { compare, finishAllAnimationsForElement, updateDefault } from "~/helpers";
 import { Sorter } from "~/sorting";
-import { Sort, SortMessages } from "./sort";
+import { BaseSorter, SortMessages } from "./BaseSorter";
+import { Arrow } from "~/objects/arrow";
 
 export const SelectionSortMessages = {
     sort: {
@@ -9,36 +10,41 @@ export const SelectionSortMessages = {
     },
 } as const satisfies MessagesObject;
 
-export class SelectionSort extends Sort implements Sorter {
+export class SelectionSort extends BaseSorter implements Sorter {
     messages: MessagesObject = updateDefault(
         SelectionSortMessages,
         SortMessages
     );
     async sort() {
-        let sortSize = this.sortArray.getSize();
+        let sortSize = this.sortArray.length();
         if (sortSize <= 1) {
             await this.pause("general.empty");
             return;
         }
 
-        if (this.sortArray.getValue(this.sortArray.getSize() - 1) === NBSP) {
-            this.sortArray.setSize(this.sortArray.getSize() - 1);
-            sortSize--;
-        }
-        //Center the array depending on its size
-        this.sortArray.center(
-            this.getTreeRoot()[0] + this.compensate,
-            this.getTreeRoot()[1] + this.$Svg.margin * 4
+        const progressionArrow = new Arrow(
+            Math.max((this.getObjectSize() * 2) / 3, 7),
+            90
         );
+        this.Svg.put(progressionArrow)
+            .cx(
+                this.sortArray.getStapleX(0) +
+                    this.sortArray.getStapleWidth() / 2
+            )
+            .y(Number(this.sortArray.y()) + Number(this.sortArray.height()) + 5)
+            .css({ stroke: "none", fill: "blue" });
+        await this.pause("Initialize progress pointer.");
 
         for (let i = 0; i < sortSize - 1; i++) {
-            let minIndex = i;
+            let minIndex: number = i;
 
-            // Find the index of the minimum element in the unsorted part of the array
+            // Highlight current min element
+            this.sortArray.setStapleHighlight(minIndex, 'info');
+
+            // Find the index of the minimum element in the shuffleed part of the array
             for (let j = i + 1; j < sortSize; j++) {
-                // Highlight the current element and the minimum element
-                this.sortArray.setIndexHighlight(j, true);
-                this.sortArray.setIndexHighlight(minIndex, true, "Blue");
+                // Highlight the current element
+                this.sortArray.setStapleHighlight(j, 'primary');
 
                 // Message: Compare the current element with the minimum element
                 await this.pause(
@@ -53,11 +59,12 @@ export class SelectionSort extends Sort implements Sorter {
                         this.sortArray.getValue(minIndex)
                     ) < 0
                 ) {
-                    // Unhighlight the previous minimum element
-                    this.sortArray.setIndexHighlight(minIndex, false);
-                    this.sortArray.setIndexHighlight(j, true, "Blue");
-
+                    // Update highlight and index to new min element
+                    this.sortArray.clearStapleHighlight(minIndex, 'info');
                     minIndex = j;
+                    this.sortArray.clearStapleHighlight(j, 'primary')
+                    this.sortArray.setStapleHighlight(j, 'info');
+
 
                     // Message: Found a new minimum element
                     await this.pause(
@@ -66,25 +73,33 @@ export class SelectionSort extends Sort implements Sorter {
                     );
                 } else {
                     // Unhighlight the current element
-                    this.sortArray.setIndexHighlight(j, false);
+                    this.sortArray.clearStapleHighlight(j, 'primary');
                 }
-                // Unhighlight the minimum element and the current element
-                this.sortArray.setIndexHighlight(j, false);
-                this.sortArray.setIndexHighlight(minIndex, false);
             }
+
             // If we found a new minimum, swap it with the current element
             if (minIndex !== i) {
                 await this.swap(this.sortArray, i, minIndex);
             }
-            // Highlight the sorted part of the array
-            this.sortArray.setIndexHighlight(i, true, "Green");
+
+            // Clear the highlight of newly positioned min element and highlight as sorted
+            this.sortArray.clearStapleHighlight(i, 'info')
+            this.sortArray.setStapleHighlight(i, 'success');
+
+            this.animate(progressionArrow).cx(
+                this.sortArray.getStapleX(i + 1) + this.sortArray.getStapleWidth() / 2
+            );
+            await this.pause("Advance pointer.");
         }
-        this.sortArray.setIndexHighlight(sortSize - 1, true, "Green");
+        
+        finishAllAnimationsForElement(this.timeline, progressionArrow);
+        progressionArrow.remove();
+        this.sortArray.setStapleHighlight(this.sortArray.length() - 1, 'success');
         await this.pause("general.finished");
 
         // Reset the highlights
         for (let i = 0; i < sortSize; i++) {
-            this.sortArray.setIndexHighlight(i, false);
+            this.sortArray.clearStapleHighlight(i, 'all');
         }
     }
 }

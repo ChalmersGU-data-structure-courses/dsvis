@@ -7,6 +7,9 @@ import { Svg } from "~/objects"; // NOT THE SAME Svg as in @svgdotjs/svg.js!!!
 import { State } from "~/state";
 import { EngineAlgorithmControl } from "./algorithm-controls/engine-algorithm-controls";
 import { EngineGeneralControls } from "./general-controls/engine-general-controls";
+import { Timeline } from "@svgdotjs/svg.js";
+import PannableAndZoomable from "~/util/PannableAndZoomable";
+import PanAndZoomHelper from "~/util/PanAndZoomHelper";
 
 export type SubmitFunction = (...args: (string | number)[]) => Promise<void>;
 
@@ -35,8 +38,11 @@ type Action = {
  */
 export const NBSP = "\u00A0";
 
-export class Engine {
+export class Engine implements PannableAndZoomable {
     // Default variable names start with $
+
+    // Use separate containing Svg to hold information that shouldn't be moved when panning
+    _containingSvg: Svg;
 
     Svg: Svg;
     messages: MessagesObject = {};
@@ -58,6 +64,13 @@ export class Engine {
     debugger: Debugger;
     state: State;
     info: Info;
+    title = "Select an action from the menu above";
+    body = NBSP;
+
+    timeline: Timeline;
+    panAndZoomHelper: PanAndZoomHelper;
+
+    resetPromise: Promise<void> | undefined;
 
     getAnimationSpeed(): number {
         return parseInt(this.generalControls.animationSpeedSelect.value);
@@ -93,6 +106,7 @@ export class Engine {
     // Inititalisation
 
     constructor(containerSelector: string) {
+        
         this.debugger = new Debugger();
         this.state = new State();
 
@@ -114,19 +128,62 @@ export class Engine {
             this.container
         );
 
-        this.Svg = new Svg(svgContainer);
+        // See explanation at property declaration for _containingSvg
+        this._containingSvg = new Svg(svgContainer);
+        this._containingSvg.viewbox(0, 0, this.$Svg.width, this.$Svg.height);
+        this.Svg = this._containingSvg.nested();
         this.Svg.viewbox(0, 0, this.$Svg.width, this.$Svg.height);
         this.Svg.$engine = this;
         if (this.debugger.isEnabled()) {
             this.Svg.addClass("debug");
         }
 
-        this.info = new Info(this.Svg, this.$Svg.margin);
+        this.panAndZoomHelper = new PanAndZoomHelper(this, svgContainer)
+        
+        this.info = new Info(this._containingSvg, this.$Svg.margin);
+
+        this.timeline = new Timeline();
+        
+        // Set initial running state to true
+        this.generalControls.setRunning(true);
+    }
+    enableViewBoxPanning(): void {
+        return this.panAndZoomHelper.enableViewBoxPanning();
+    }
+    disableViewBoxPanning(): void {
+        return this.panAndZoomHelper.disableViewBoxPanning();
+    }
+    resetViewBox(): void {
+        return this.panAndZoomHelper.resetViewBox();
+    }
+    resetViewBoxPosition(): void {
+        return this.panAndZoomHelper.resetViewBoxPosition();
+    }
+    moveViewBox(dx: number, dy: number, animate: boolean): void {
+        return this.panAndZoomHelper.moveViewBox(dx, dy, animate);
+    }
+    setViewBoxPosition(x: number, y: number, animate: boolean): void {
+        return this.panAndZoomHelper.setViewBoxPosition(x, y, animate);
+    }
+    setViewBoxCenter(x: number, y: number, animate: boolean): void {
+        return this.panAndZoomHelper.setViewBoxCenter(x, y, animate);
+    }
+    zoomViewBox(direction: "in" | "out", pointerLocation: { x: number; y: number; }, steps: number, animate: boolean): void {
+        return this.panAndZoomHelper.zoomViewBox(direction, pointerLocation, steps, animate);
     }
 
     initialise(): void {
-        this.resetAll();
-        this.generalControls.setRunning(true);
+        if (this.resetPromise) {
+            this.resetPromise
+                .then(() => this.resetAll())
+                .then(() => {
+                    this.resetPromise = undefined;
+                });
+        } else {
+            this.resetPromise = this.resetAll().then(() => {
+                this.resetPromise = undefined
+            });
+        }
     }
 
     async resetAll(): Promise<void> {
@@ -144,6 +201,7 @@ export class Engine {
 
     async reset(): Promise<void> {
         this.clearCanvas();
+        this.panAndZoomHelper.resetViewBox();
         await this.resetAlgorithm();
         this.resetListeners(false);
     }
@@ -190,8 +248,8 @@ export class Engine {
     }
 
     setIdleTitle(): void {
-        this.info.setTitle("Select an action from the menu above");
-        this.info.setBody(NBSP);
+        this.info.setTitle(this.title);
+        this.info.setBody(this.body);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -256,7 +314,7 @@ export class Engine {
      */
     async submit(
         method: SubmitFunction,
-        field: HTMLInputElement | null
+        field: HTMLInputElement | null | string
     ): Promise<boolean> {
         let rawValue: string = "";
         try {
@@ -371,7 +429,7 @@ export class Engine {
             this.debugger.log(
                 `CALL ${nAction}: ${title}, ${JSON.stringify(this.actions)}`
             );
-
+            
             this.info.setTitle(title);
             await this.pause("");
 
@@ -468,11 +526,13 @@ export class Engine {
         return title;
     }
 
-    animate(elem: Element, animate = true) {
+    animate<T extends Element>(elem: T, animate = true) {
         if (this.state.isAnimating() && animate) {
             this.info.setStatus("running");
-            this.info.setStatus("paused", this.getAnimationSpeed());
-            return elem.animate(this.getAnimationSpeed(), 0, "now");
+            //this.info.setStatus("paused", this.getAnimationSpeed());
+            const elementRunner = elem.animate(this.getAnimationSpeed());
+            this.timeline.schedule(elementRunner, 0, "now").play();
+            return elementRunner;
         } else {
             return elem;
         }

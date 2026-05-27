@@ -70,6 +70,12 @@ export class LinkedNode extends G {
         return [x, y];
     }
 
+    getPos(): [number, number] {
+        const x = Number(this.x());
+        const y = Number(this.y());
+        return [x, y];
+    }
+
     getSize(): number {
         return this.nodeWidth;
     }

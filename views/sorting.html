@@ -5,44 +5,60 @@
   <meta charset="utf-8" />
 </head>
 
-<header>
-  <h1><a href="index.html">Visualizations of data structures and algorithms</a></h1>
-</header>
+<body>
+  <header class="site-header"></header>
 
-<main>
-  <section id="sortingContainer">
+  <main class="main-shell d-flex align-items-start">
+  <section id="sortingContainer" class="page-content mx-auto py-4 px-3 px-md-4 text-center">
 
-    <label for="algorithmSelector">Choose a priority queue data structure:</label>
-    <h2 class="selectorWrapper">
-      <select name="algorithmSelector" class="algorithmSelector">
-        <option disabled value="">&mdash; Please choose a data structure &mdash;</option>
+    <label for="algorithmSelector" class="form-label fw-semibold d-block text-start">Choose a sorting algorithm:</label>
+    <div class="selectorWrapper mx-auto mb-3">
+      <select name="algorithmSelector" class="algorithmSelector form-select" id="algorithmSelector">
+        <option disabled value="">&mdash; Please choose an algorithm &mdash;</option>
         <hr />
         <option value="SelectionSort">Selection sort</option>
         <option value="MergeSort">Merge sort</option>
         <option value="InsertionSort">Insertion sort</option>
         <option value="QuickSort">Quick sort</option>
+        <option value="BubbleSort">Bubble sort</option>
+        <option value="HeapSort">Heap sort</option>
+        <option value="RadixSort">Radix sort</option>
       </select>
-    </h2>
+    </div>
 
-    <fieldset class="algorithmControls">
-      <span class="formgroup">
-        <select class="insertSelect disableWhenRunning">
-          <option value="" selected>Insert many values</option>
-          <option value="A L G O R I T H M">A L G O R I T H M</option>
-          <option value="C O M P L E X I T Y">C O M P L E X I T Y</option>
-          <option value="R E C U R S I O N">R E C U R S I O N</option>
-          <option value="A B C D E F G H J K">A B C D E F G H J K</option>
-          <option value="Z Y X V T S P O M L">Z Y X V T S P O M L</option>
-          <option value="A B C D E F G H I J K L M N O P Q R S T U V W X Y Z">A B C D E &hellip; X Y Z</option>
+    <fieldset class="algorithmControls canvas-controls-attached-top d-flex flex-wrap justify-content-start gap-2 text-start">
+      <span class="formgroup d-inline-flex flex-wrap align-items-center gap-2">
+        <label for="presetSizeSelect">Array size:</label>
+        <select id="presetSizeSelect" class="presetSizeSelect disableWhenRunning form-select form-select-sm w-auto">
+          <option value="none" disabled>-- Select size --</option>
+          <option value="tiny">Tiny (10)</option>
+          <option value="small">Small (20)</option>
+          <option value="medium">Medium (50)</option>
+          <option value="large">Large (100)</option>
+          <option value="huge">Huge (200)</option>
+          <option value="empty">Empty</option>
         </select>
-        <input class="insertField disableWhenRunning" type="text" size="10" maxlength="20" />
-        <input class="insertSubmit disableWhenRunning" type="submit" value="Insert" />
       </span>
-      <span class="formgroup">
-        <input class="sortSubmit disableWhenRunning" type="submit" value="Sort" />
+
+      <span class="formgroup d-inline-flex flex-wrap align-items-center gap-2">
+        <label for="insertField">Insert:</label>
+        <input id="insertField" class="insertField disableWhenRunning form-control form-control-sm w-auto d-inline-block" type="text" size="10" />
+        <input id="insertSubmit" class="insertSubmit disableWhenRunning btn btn-outline-light btn-sm" type="submit" value="Insert" />
       </span>
-      <span class="formgroup">
-        <input class="clearSubmit disableWhenRunning" type="submit" value="Clear" />
+
+      <span class="formgroup d-inline-flex flex-wrap align-items-center gap-2">
+        <input id="sortSubmit" class="sortSubmit disableWhenRunning btn btn-outline-light btn-sm" type="submit" value="Sort" />
+        <input id="clearSubmit" class="clearSubmit disableWhenRunning btn btn-outline-light btn-sm" type="submit" value="Clear" />
+      </span>
+
+      <span class="formgroup d-inline-flex flex-wrap align-items-center gap-2">
+        <select id="shuffleSelect" class="shuffle disableWhenRunning form-select form-select-sm w-auto">
+          <option disabled value="" selected>Shuffle Array</option>
+          <option value="shuffleRandom">Random</option>
+          <option value="shuffleReversed">Reversed</option>
+          <option value="shuffleReversedSorted">Reversed Sorted</option>
+          <option value="shuffle70Percent">Almost Sorted</option>
+        </select>
       </span>
     </fieldset>
 
@@ -51,64 +67,51 @@
       <svg></svg>
     </div>
 
-    <fieldset class="generalControls">
-      <span class="formgroup">
-        <button class="fastBackward">&lt;&lt;</button>
-        <button class="stepBackward">&lt;</button>
-        <button class="toggleRunner">Run</button>
-        <button class="stepForward">&gt;</button>
-        <button class="fastForward">&gt;&gt;</button>
+    <fieldset class="generalControls canvas-controls-attached d-flex flex-wrap justify-content-start gap-2 text-start">
+      <span class="formgroup media-controls d-inline-flex flex-wrap align-items-center gap-2">
+        <button class="fastBackward btn btn-outline-light btn-sm media-btn" aria-label="Fast backward">⏮︎</button>
+        <button class="stepBackward btn btn-outline-light btn-sm media-btn" aria-label="Step backward">⏪︎</button>
+        <button class="toggleRunner btn btn-light btn-sm media-btn media-btn-run" aria-label="Run">Run</button>
+        <button class="stepForward btn btn-outline-light btn-sm media-btn" aria-label="Step forward">⏩︎</button>
+        <button class="fastForward btn btn-outline-light btn-sm media-btn" aria-label="Fast forward">⏭︎</button>
       </span>
-      <span class="formgroup">
+
+      <span class="formgroup d-inline-flex flex-wrap align-items-center gap-2">
         <label>Speed:
-          <select class="animationSpeed">
+          <select class="animationSpeed form-select form-select-sm w-auto d-inline-block">
             <option value="1200">Slowest</option>
             <option value="700" selected>Slow</option>
             <option value="300">Fast</option>
-            <option value="100">Fastest</option>
+            <option value="1">Fastest</option>
           </select>
         </label>
       </span>
-      <span class="formgroup">
-        <label>Node size:
-          <select class="objectSize">
-            <option value="12">Tiny</option>
-            <option value="20">Small</option>
-            <option value="28">Medium</option>
-            <option value="40" selected>Large</option>
-            <option value="50">Huge</option>
+
+      <span class="formgroup d-inline-flex flex-wrap align-items-center gap-2">
+        <label>Staple size:
+          <select class="objectSize form-select form-select-sm w-auto d-inline-block">
+            <option value="tiny">Tiny</option>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large" selected>Large</option>
+            <option value="huge">Huge</option>
           </select>
         </label>
       </span>
+
       <span class="formgroup">
-        <label>Scroll speed:
-          <select class="scrollSpeed">
-            <option value="1">Slowest</option>
-            <option value="2">Slow</option>
-            <option value="5" selected>Medium</option>
-            <option value="10">Fast</option>
-            <option value="20">Fastest</option>
-          </select>
-        </label>
-      </span>
-      <span class="formgroup">
-        <button class="moveLeft">&lt;</button>
-        <button class="moveUp">^</button>
-        <button class="moveDown">v</button>
-        <button class="moveRight">&gt;</button>
-        <button class="zoomIn">+</button>
-        <button class="zoomOut">-</button>
+        <button type="button" id="resetPanAndZoomButton" class="btn btn-outline-light btn-sm">Reset pan & zoom</button>
       </span>
     </fieldset>
-
   </section>
 </main>
 
-<footer>
-  <p>&copy;2024 <a href="https://github.com/heatherleaf">Peter Ljunglöf</a>,
-    open source code <a href="https://github.com/ChalmersGU-data-structure-courses/dsvis">on GitHub</a></p>
-</footer>
-
+  <footer class="site-footer py-3">
+    <div class="container">
+      <p class="mb-0 text-center">&copy;2024 <a href="https://github.com/heatherleaf">Peter Ljunglöf</a>,
+        open source code <a href="https://github.com/ChalmersGU-data-structure-courses/dsvis">on GitHub</a></p>
+    </div>
+  </footer>
 </body>
 
 </html>

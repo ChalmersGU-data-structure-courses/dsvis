@@ -38,6 +38,7 @@ export class EngineGeneralControls {
     fastForwardButton: HTMLButtonElement;
     animationSpeedSelect: HTMLSelectElement;
     objectSizeSelect: HTMLSelectElement;
+    resetPanAndZoomButton: HTMLButtonElement;
 
     engine: Engine;
     debugger: Debugger;
@@ -45,6 +46,9 @@ export class EngineGeneralControls {
     activeListeners: EventListenersMap = new Map();
     idleListeners: IdleListener[] = [];
     asyncListeners: AsyncListener[] = [];
+
+    static readonly RUN_SYMBOL = "▶︎";
+    static readonly PAUSE_SYMBOL = "⏸︎";
 
     constructor(container: HTMLElement, engine: Engine) {
         this.engine = engine;
@@ -81,6 +85,10 @@ export class EngineGeneralControls {
         );
         this.animationSpeedSelect = querySelector<HTMLSelectElement>(
             "select.animationSpeed",
+            container
+        );
+        this.resetPanAndZoomButton = querySelector<HTMLButtonElement>(
+            "button#resetPanAndZoomButton",
             container
         );
 
@@ -133,6 +141,14 @@ export class EngineGeneralControls {
                         this.engine.reset();
                     }
                 },
+            },
+            {
+                element: this.resetPanAndZoomButton,
+                type: "click",
+                condition: () => true,
+                handler: () => {
+                    this.engine.resetViewBox();
+                }
             }
         );
 
@@ -148,7 +164,8 @@ export class EngineGeneralControls {
             {
                 element: this.fastForwardButton,
                 type: "click",
-                handler: (resolve, reject) => {
+                handler: async (resolve, reject) => {
+                    this.engine.timeline.finish();
                     this.engine.actions[this.engine.currentAction].stepCount =
                         Number.MAX_SAFE_INTEGER;
                     this.fastForward(resolve, reject);
@@ -186,6 +203,14 @@ export class EngineGeneralControls {
                 type: "change",
                 handler: (resolve, reject) =>
                     reject({ until: this.engine.currentStep }),
+            },
+            {
+                element: this.resetPanAndZoomButton,
+                type: "click",
+                handler: (resolve, reject) => {
+                    this.engine.resetViewBox();
+                    resolve(undefined);
+                }
             }
         );
     }
@@ -258,11 +283,22 @@ export class EngineGeneralControls {
         } else {
             classes.remove("selected");
         }
+        this.syncRunnerVisual(running);
         return this;
     }
 
     toggleRunner(): this {
         return this.setRunning(!this.isRunning());
+    }
+
+    syncRunnerVisual(running: boolean): void {
+        this.toggleRunnerButton.textContent = running
+            ? EngineGeneralControls.PAUSE_SYMBOL
+            : EngineGeneralControls.RUN_SYMBOL;
+        this.toggleRunnerButton.setAttribute(
+            "aria-label",
+            running ? "Pause" : "Run"
+        );
     }
 
     addRunnerListener() {

@@ -178,7 +178,7 @@ export class BinaryNode extends GraphNode {
         animationDuration: number = 0
     ): this {
         this._resizeWidths(nodeSpacing);
-        const svgWidth = this.root().viewbox().width;
+        const svgWidth = this.engine().Svg.viewbox().width;
         if (startX + this.$rightWidth > svgWidth - svgMargin) {
             startX = svgWidth - this.$rightWidth - svgMargin;
         }

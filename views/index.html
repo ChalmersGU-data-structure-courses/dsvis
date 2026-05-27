@@ -7,57 +7,131 @@
 
 <body>
 
-  <header>
-    <h1><a>Visualizations of data structures and algorithms</a></h1>
-  </header>
+  <header class="site-header"></header>
 
-  <main>
+  <main class="main-shell d-flex align-items-start">
+    <section class="page-content page-content-with-bottom-panel mx-auto py-4 px-3 px-md-4">
 
-    <h3>Try the different visualizations</h3>
-    <p>Note that there is currently only a couple of visualizations:</p>
-    <ul>
-      <li><strong><a href="collections.html">Collections</a></strong> (BSTs, AVL tree, Red-black trees, Splay trees, and
-        B-trees)</li>
-      <li><strong><a href="prioqueues.html">Priority queues</a></strong> (currently only Binary heaps are supported)
-      </li>
-  <li><strong><a href="sorting.html">Sorting</a></strong></li>
-    </ul>
+      <h3 class="h5">Try the different visualizations</h3>
+      <p class="mb-3">Note that there is currently only a couple of visualizations:</p>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4 page-link-grid">
+        <div class="col">
+          <div class="card h-100">
+            <div id="avl-card-animation" class="card-img-top"></div>
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">Collections</h5>
+              <p class="card-text">Explore different datastructures: Trees, Queues, Hashtables and more.</p>
+              <a href="collections.html" class="btn btn-dark mt-auto">Open visualization</a>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100">
+            <div id="heap-card-animation" class="card-img-top"></div>
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">Priority Queues</h5>
+              <p class="card-text">Binary heap visualizations and queue operations.</p>
+              <a href="prioqueues.html" class="btn btn-dark mt-auto">Open visualization</a>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100">
+            <div id="bubble-card-animation" class="card-img-top"></div>
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">Sorting</h5>
+              <p class="card-text">Step-by-step sorting algorithm visualizations.</p>
+              <a href="sorting.html" class="btn btn-dark mt-auto">Open visualization</a>
+            </div>
+          </div>
+        </div>
+        <!-- För senare implementering: av quiz -->
+        <!-- <div class="col">
+          <div class="card h-100">
+            <img class="card-img-top" src="assets/favicon.svg" alt="AVL quiz" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">AVL Quiz</h5>
+              <p class="card-text">Practice balancing AVL trees with interactive tasks.</p>
+              <a href="avl-quiz.html" class="btn btn-dark mt-auto">Open visualization</a>
+            </div>
+          </div>
+        </div> -->
+        <div class="col">
+          <div class="card h-100">
+            <div id="dfs-card-animation" class="card-img-top"></div>
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">Graph</h5>
+              <p class="card-text">Explore graph traversal and structure interactions.</p>
+              <a href="graph.html" class="btn btn-dark mt-auto">Open visualization</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <h3>History</h3>
 
-    <p>A useful aid to understand complex data structures and algorithms is to see them in action. Back in 2011 <a
-        href="http://www.cs.usfca.edu/galles">David Galles</a> from University of San Francisco developed <a
-        href="https://www.cs.usfca.edu/~galles/visualization/">interactive animations</a> for a variety of data
-      structures and algorithms. (Or rather, he ported his even older implementations to Javascript in 2011). Updated
-      versions of his implementations are <a
-        href="https://chalmersgu-data-structure-courses.github.io/visualization/">available here</a>.
-    </p>
+      <div id="accordion" class="mt-auto">
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+             <button class="btn btn-link collapsed" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                About
+              </button>
+            </h5>
+          </div>
 
-    <p>However, the original implemetation uses the HTML Canvas bitmap to draw the animations, which is slow and a bit
-      ugly. Since 2011 both HTML and Javascript has developed quite a lot, so I thought it was time for a full makeover
-      with a completely new codebase. So here it is: the new implementation uses SVG vector graphics and built-in SVG
-      animations. It also makes use of Javascript's asynchronous processes for pausing the animations, which makes it a
-      lot easier to implment nice animations for data structures and algorithms.
-    </p>
+          <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-bs-parent="#accordion">
+            <div class="card-body">
+              <h3 class="h5">History</h3>
 
-    <h3>Source code</h3>
+              <p>A useful aid to understand complex data structures and algorithms is to see them in action. Back in
+                2011 <a href="http://www.cs.usfca.edu/galles">David Galles</a> from University of San Francisco
+                developed <a href="https://www.cs.usfca.edu/~galles/visualization/">interactive animations</a> for a
+                variety of data
+                structures and algorithms. (Or rather, he ported his even older implementations to Javascript in 2011).
+                Updated
+                versions of his implementations are <a
+                  href="https://chalmersgu-data-structure-courses.github.io/visualization/">available here</a>.
+              </p>
 
-    <p>All source code is available at the
-      <a href="https://github.com/ChalmersGU-data-structure-courses/dsvis">GitHub repository</a>.
-      Everything is <a href="https://github.com/ChalmersGU-data-structure-courses/dsvis/blob/master/LICENSE">licensed
-        under GPL-3</a>,
-      which means that you are free to use it and modify the code (as long as you publish the changes under the same
-      license).
-    </p>
+              <p>However, the original implemetation uses the HTML Canvas bitmap to draw the animations, which is slow
+                and a bit
+                ugly. Since 2011 both HTML and Javascript has developed quite a lot, so I thought it was time for a full
+                makeover
+                with a completely new codebase. So here it is: the new implementation uses SVG vector graphics and
+                built-in SVG
+                animations. It also makes use of Javascript's asynchronous processes for pausing the animations, which
+                makes it a
+                lot easier to implment nice animations for data structures and algorithms.
+              </p>
 
-    <p>I use the nice <a href="https://svgjs.dev/">SVG.js</a> library for working with SVG in Javascript. Thanks to the
-      authors for maintaining it!
-    </p>
+              <h3 class="h5">Source code</h3>
 
+              <p>All source code is available at the
+                <a href="https://github.com/ChalmersGU-data-structure-courses/dsvis">GitHub repository</a>.
+                Everything is <a
+                  href="https://github.com/ChalmersGU-data-structure-courses/dsvis/blob/master/LICENSE">licensed
+                  under GPL-3</a>,
+                which means that you are free to use it and modify the code (as long as you publish the changes under
+                the same
+                license).
+              </p>
+
+              <p>I use the nice <a href="https://svgjs.dev/">SVG.js</a> library for working with SVG in Javascript.
+                Thanks to the
+                authors for maintaining it!
+              </p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer>
-    <p>&copy;2024 <a href="https://github.com/heatherleaf">Peter Ljunglöf</a></p>
+  <footer class="site-footer py-3">
+    <div class="container">
+      <p class="mb-0 text-center">&copy;2024 <a href="https://github.com/heatherleaf">Peter Ljunglöf</a></p>
+    </div>
   </footer>
 
 </body>

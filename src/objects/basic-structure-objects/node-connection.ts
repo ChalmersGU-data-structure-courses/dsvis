@@ -63,7 +63,7 @@ export class LinkedConnection extends Connection<LinkedNode> {
         // Calculate the half dimensions
         const halfWidth = nodeWidth / 2;
         const halfHeight = nodeHeight / 2;
-        
+
         // Calculate the direction vector from end node to start point
         const dx = this.$coords.x1 - endNodeX;
         const dy = this.$coords.y1 - endNodeY;
@@ -74,7 +74,7 @@ export class LinkedConnection extends Connection<LinkedNode> {
         if (Math.abs(dx) > Math.abs(dy)) {
             // Intersect with left or right edge
             intersectionX = endNodeX + Math.sign(dx) * halfWidth;
-            intersectionY = straight ? this.$start.getPointerPos()[1] : endNodeY;
+            intersectionY = straight ? this.$coords.y1 : endNodeY;
         } else {
             // Intersect with top or bottom edge
             //intersectionX = straight ? this.$start.getPointerPos()[0] : endNodeX;

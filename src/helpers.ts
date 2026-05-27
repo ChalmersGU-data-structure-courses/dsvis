@@ -1,3 +1,4 @@
+import { Element as ElementSvgDotJs, Runner, Timeline } from "@svgdotjs/svg.js";
 import { Engine, MessagesObject, NBSP } from "~/engine";
 import { RejectReason } from "./general-controls/engine-general-controls";
 
@@ -178,7 +179,28 @@ export function initialiseEngine<T extends Engine = Engine>(
 
     const EngineClass = engineSubclasses[algo] || Engine;
     const engine = new EngineClass(containerID);
-    engine.initialise();
+    
+    // Check if there's an array query parameter, otherwise use default
+    const arrayParam = new URL(window.location.href).searchParams.get("array");
+    let initialValues: number[] = [];
+    
+    if (arrayParam) {
+        // Parse the array from the query parameter (comma-separated values)
+        initialValues = arrayParam
+            .split(",")
+            .map(val => parseInt(val.trim()))
+            .filter(val => !isNaN(val));
+    // } else {
+    //     // Use default initial values
+    //     // initialValues = [32, 83, 22, 15, 8, 12, 43, 54, 23, 34, 76, 87, 32];
+    }
+    
+    // Call initialise with parameters if it's a Sorter, otherwise without
+    if (algo in engineSubclasses) {
+        (engine as any).initialise(initialValues);
+    } else {
+        engine.initialise();
+    }
 
     algoSelector.addEventListener("change", () => {
         if (algoSelector.value in engineSubclasses) {
@@ -212,6 +234,7 @@ export function querySelector<T extends Element = Element>(
     selector: string,
     container: HTMLElement = document.documentElement
 ) {
+    
     const element = container.querySelector<T>(selector);
 
     if (!element) {
@@ -219,4 +242,57 @@ export function querySelector<T extends Element = Element>(
     }
 
     return element;
+}
+
+export function finishAllAnimationsForElement<T extends ElementSvgDotJs>(timeline: Timeline, element: T) {
+    // Extend type definitions for timeline to allow accessing hidden properties, and
+    // use these properties to finish animations of the arrows before removing them,
+    // so that there are no errors trying to animate a removed element.
+    type ExtendedTimeline = Timeline & {
+        _runners: [
+            {
+                persist: number;
+                start: number;
+                runner: Runner & { _element: ElementSvgDotJs };
+            },
+        ];
+    };
+    (timeline as ExtendedTimeline)._runners.forEach((runnerInfo) => {
+        if (runnerInfo.runner._element === element) {
+            runnerInfo.runner.finish();
+        }
+    });
+}
+
+export function generateShuffledArray(values: number[], shuffleType: string): number[] {
+    const arrayCopy = [...values];
+
+    if (shuffleType === "shuffleRandom") {
+        // Fisher-Yates shuffle
+        for (let i = arrayCopy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arrayCopy[i], arrayCopy[j]] = [arrayCopy[j], arrayCopy[i]];
+        }
+    } else if (shuffleType === "shuffleReversed") {
+        // Reverse the array
+        arrayCopy.reverse();
+    } else if (shuffleType === "shuffleReversedSorted") {
+        // Reverse sorted (descending order)
+        arrayCopy.sort((a, b) => b - a);
+    } else if (shuffleType === "shuffle70Percent") {
+        // Sort first 70% of array, shuffle the rest
+        const splitIndex = Math.ceil(arrayCopy.length * 0.7);
+        const firstPart = arrayCopy.slice(0, splitIndex).sort((a, b) => a - b);
+        const secondPart = arrayCopy.slice(splitIndex);
+        
+        // Shuffle the second part (Fisher-Yates)
+        for (let i = secondPart.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [secondPart[i], secondPart[j]] = [secondPart[j], secondPart[i]];
+        }
+        
+        return [...firstPart, ...secondPart];
+    }
+
+    return arrayCopy;
 }

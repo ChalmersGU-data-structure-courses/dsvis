@@ -6,33 +6,41 @@
 </head>
 
 <body>
-  <header>
-    <h1>
-      <a href="index.html">Visualizations of data structures and algorithms</a>
-    </h1>
-  </header>
+  <header class="site-header"></header>
 
-  <main>
-    <section id="collectionsContainer">
-      <label for="algorithmSelector">Choose a collection data structure:</label>
-      <h2 class="selectorWrapper">
-        <select name="algorithmSelector" class="algorithmSelector">
+  <main class="main-shell d-flex align-items-start">
+    <section id="collectionsContainer" class="page-content mx-auto py-4 px-3 px-md-4 text-center">
+      <label for="algorithmSelector" class="form-label fw-semibold d-block text-start">Choose a collection data structure:</label>
+      <div class="selectorWrapper mx-auto mb-3">
+        <select name="algorithmSelector" class="algorithmSelector form-select" id="algorithmSelector">
           <option disabled value="">
             &mdash; Please choose a data structure &mdash;
           </option>
           <hr />
-          <option value="BST">BST: Binary search tree</option>
-          <option value="AVL">AVL tree</option>
-          <option value="RedBlack">Red-black tree</option>
-          <option value="SplayTree">Splay tree</option>
-          <option value="BTree">B-tree</option>
-          <option value="LinkedListAnim">Linked List</option>
+          <optgroup label="Tree structures">
+            <option value="AVL">AVL tree</option>
+            <option value="BST">BST: Binary search tree</option>
+            <option value="BTree">B-tree</option>
+            <option value="RedBlack">Red-black tree</option>
+            <option value="SplayTree">Splay tree</option>
+          </optgroup>
+          <optgroup label="Linear structures">
+            <option value="LinkedListAnim">Linked List</option>
+            <option value="QueueDynamicArrayAnim">Queue (Dynamic Array)</option>
+            <option value="QueueLinkedListAnim">Queue (Linked List)</option>
+            <option value="StackDynamicArrayAnim">Stack (Dynamic Array)</option>
+            <option value="StackLinkedListAnim">Stack (Linked List)</option>
+          </optgroup>
+          <optgroup label="Hash tables">
+            <option value="HashTableLinearProbing">Hash Table (Linear Probing)</option>
+            <option value="HashTableSeparateChaining">Hash Table (Separate Chaining)</option>
+          </optgroup>
         </select>
-      </h2>
+      </div>
 
-      <fieldset class="algorithmControls">
-        <span class="formgroup">
-          <select class="insertSelect disableWhenRunning">
+      <fieldset class="algorithmControls canvas-controls-attached-top d-flex flex-wrap justify-content-start gap-2 text-start">
+        <span class="formgroup d-inline-flex flex-wrap align-items-center gap-2">
+          <select class="insertSelect disableWhenRunning form-select form-select-sm w-auto">
             <option value="" selected>Insert many values</option>
             <option value="A L G O R I T H M">A L G O R I T H M</option>
             <option value="C O M P L E X I T Y">C O M P L E X I T Y</option>
@@ -43,22 +51,22 @@
               A B C D E &hellip; X Y Z
             </option>
           </select>
-          <input class="insertField disableWhenRunning" type="text" size="10" maxlength="20" />
-          <input class="insertSubmit disableWhenRunning" type="submit" value="Insert" />
+          <div class="input-group input-group-sm w-auto flex-grow-0">
+            <input class="insertField disableWhenRunning form-control form-control-sm w-auto" type="text" placeholder="Insert" size="10" maxlength="20" />
+            <input class="insertSubmit disableWhenRunning btn btn-outline-light btn-sm" type="submit" value="Insert" />
+          </div>
         </span>
-        <span class="formgroup">
-          <input class="findField disableWhenRunning" type="text" size="4" maxlength="4" />
-          <input class="findSubmit disableWhenRunning" type="submit" value="Find" />
-        </span>
-        <span class="formgroup">
-          <input class="deleteField disableWhenRunning" type="text" size="4" maxlength="4" />
-          <input class="deleteSubmit disableWhenRunning" type="submit" value="Delete" />
-        </span>
-        <span class="formgroup">
-          <input class="printSubmit disableWhenRunning" type="submit" value="Print" />
-        </span>
-        <span class="formgroup">
-          <input class="clearSubmit disableWhenRunning" type="submit" value="Clear" />
+        <div class="input-group input-group-sm w-auto flex-grow-0">
+          <input class="findField disableWhenRunning form-control form-control-sm w-auto" type="text" size="4" placeholder="Find" maxlength="4" />
+          <input class="findSubmit disableWhenRunning btn btn-outline-light btn-sm" type="submit" value="Find" />
+        </div>
+        <div class="input-group input-group-sm w-auto flex-grow-0">
+          <input class="deleteField disableWhenRunning form-control form-control-sm w-auto" type="text" placeholder="Delete" size="4" maxlength="4" />
+          <input class="deleteSubmit disableWhenRunning btn btn-outline-light btn-sm" type="submit" value="Delete" />
+        </div>
+        <input class="printSubmit disableWhenRunning btn btn-outline-light btn-sm" type="submit" value="Print" />
+        <span class="formgroup d-inline-flex flex-wrap align-items-center gap-2">
+          <input class="clearSubmit disableWhenRunning btn btn-outline-light btn-sm" type="submit" value="Clear" />
         </span>
       </fieldset>
 
@@ -66,17 +74,17 @@
         <svg></svg>
       </div>
 
-      <fieldset class="generalControls">
-        <span class="formgroup">
-          <button class="fastBackward">&lt;&lt;</button>
-          <button class="stepBackward">&lt;</button>
-          <button class="toggleRunner">Run</button>
-          <button class="stepForward">&gt;</button>
-          <button class="fastForward">&gt;&gt;</button>
+      <fieldset class="generalControls canvas-controls-attached d-flex flex-wrap justify-content-start gap-2 text-start">
+        <span class="formgroup media-controls d-inline-flex flex-wrap align-items-center gap-2">
+          <button class="fastBackward btn btn-outline-light btn-sm media-btn" aria-label="Fast backward">⏮︎</button>
+          <button class="stepBackward btn btn-outline-light btn-sm media-btn" aria-label="Step backward">⏪︎</button>
+          <button class="toggleRunner btn btn-light btn-sm media-btn media-btn-run" aria-label="Run">Run</button>
+          <button class="stepForward btn btn-outline-light btn-sm media-btn" aria-label="Step forward">⏩︎</button>
+          <button class="fastForward btn btn-outline-light btn-sm media-btn" aria-label="Fast forward">⏭︎</button>
         </span>
-        <span class="formgroup">
+        <span class="formgroup d-inline-flex flex-wrap align-items-center gap-2">
           <label>Speed:
-            <select class="animationSpeed">
+            <select class="animationSpeed form-select form-select-sm w-auto d-inline-block">
               <option value="1200">Slowest</option>
               <option value="700" selected>Slow</option>
               <option value="300">Fast</option>
@@ -84,9 +92,9 @@
             </select>
           </label>
         </span>
-        <span class="formgroup">
+        <span class="formgroup d-inline-flex flex-wrap align-items-center gap-2">
           <label>Node size:
-            <select class="objectSize">
+            <select class="objectSize form-select form-select-sm w-auto d-inline-block">
               <option value="12">Tiny</option>
               <option value="20">Small</option>
               <option value="28">Medium</option>
@@ -95,16 +103,21 @@
             </select>
           </label>
         </span>
+        <span class="formgroup">
+          <button type="button" id="resetPanAndZoomButton" class="btn btn-outline-light btn-sm">Reset pan and zoom</button>
+        </span>
       </fieldset>
     </section>
   </main>
 
-  <footer>
-    <p>
-      &copy;2024 <a href="https://github.com/heatherleaf">Peter Ljunglöf</a>,
-      open source code
-      <a href="https://github.com/ChalmersGU-data-structure-courses/dsvis">on GitHub</a>
-    </p>
+  <footer class="site-footer py-3">
+    <div class="container">
+      <p class="mb-0 text-center">
+        &copy;2024 <a href="https://github.com/heatherleaf">Peter Ljunglöf</a>,
+        open source code
+        <a href="https://github.com/ChalmersGU-data-structure-courses/dsvis">on GitHub</a>
+      </p>
+    </div>
   </footer>
 </body>
 

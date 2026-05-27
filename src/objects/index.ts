@@ -55,7 +55,11 @@ extend(Element, {
         return this as Element;
     },
     engine() {
-        return (this as Element).root().$engine;
+        
+        const svg = ((this as Element).parent("svg") as Svg)
+        if (!svg)
+            throw new Error("Couldn't find svg ancestor")
+        return svg.$engine;
     },
 });
 

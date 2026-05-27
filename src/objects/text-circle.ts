@@ -8,16 +8,41 @@ export class TextCircle extends G {
     constructor(text: string, size: number, strokeWidth: number) {
         super();
         this.$circle = this.circle(size).stroke({ width: strokeWidth });
-        this.$text = this.text(text);
+        this.$text = this.text(text).font({ size: size * 0.6});
     }
 
     init(x: number, y: number): this {
         this.$circle.center(0, 0);
         this.$text.center(0, 0);
         this.center(x, y);
-
+        
         return this;
     }
+
+    
+   /**
+    * 
+    * @param cssClass name of a defined css class
+    * @param enabled 
+    */
+
+    setHighlightColor(enabled: boolean,cssClass?: string,theme?:string) {
+    const highlightClasses = [
+        'highlight',
+        'highlight-blue',
+        'highlight-green'
+    ]
+
+    highlightClasses.forEach(c => this.removeClass(c))
+
+    if (enabled && cssClass) {
+        this.addClass(cssClass)
+    }
+    
+
+    
+}
+
 
     getText(): string {
         return this.$text.text();

@@ -1,304 +1,831 @@
 @charset "utf-8";
-
-/* A mixture of the following two CSS resets:
-   - Josh Comeau: https://www.joshwcomeau.com/css/custom-css-reset/
-   - Andy Bell: https://piccalil.li/blog/a-more-modern-css-reset/
-*/
-
-*, *::before, *::after {
-	box-sizing: border-box;
-}
-* {
-	margin: 0;
-	padding: 0;
-}
-input, button, textarea, select {
-	font: inherit;
-}
-body {
-	line-height: 1.5;
-	-webkit-font-smoothing: antialiased;
-}
-h1, h2, h3, h4, button, input, label {
-  	line-height: 1.1;
-}
-p, h1, h2, h3, h4, h5, h6 {
-	overflow-wrap: break-word;
-}
-img, picture, video, canvas, svg {
-	display: block;
-	max-width: 100%;
-}
-
-/* End CSS reset */
-
-body {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 100%;
-	background-color: maroon;
-}
-
-main {
-	background-color: lemonchiffon;
-}
-
-section, p, h1, h2, h3, h4, h5, h6, ul, ol, dl {
-	padding-bottom: 1rem;
-}
-
-h1 { font-size: 1.6rem; }
-h2 { font-size: 1.2rem; }
-h3 { font-size: 1.1rem; }
-
-body > * {
-	padding-top: 1rem;
-	padding-left: 5%;
-	padding-right: 5%;
-}
-
-ul, ol {
-	padding-left: 2em;
-}
-
-header, footer {
-	color: lemonchiffon;
-	background-color: maroon;
-}
-
-a {
-	color: inherit;
-}
-
-h1 a {
-	text-decoration: none;
-}
-
-
-.selectorWrapper > select {
-	appearance: none;
-	padding: 6px 12px;
-	background-color: inherit;
-}
-
-svg, .selectorWrapper > select {
-	border: solid 1px maroon;
-	border-radius: 5px;
-	width: 100%;
-}
-
-.selectorWrapper {
-	position: relative;
-	max-width: 1000px;
-}
-
-.selectorWrapper::after {
-	content: "▼";
-	color: maroon;
-	font-size: 1rem;
-	top: 10px;
-	right: 10px;
-	position: absolute;
-}
-
-/*-----------------------------------------------------------------*/
-
-svg {
-    background-color: white;
-    border: 2px solid maroon;
-    width: 100%;
-	max-width: 1000px;
-}
-
-fieldset, form {
-    border: none;
-	display: inline-block;
-}
-
-.formgroup {
-	white-space: nowrap;
-	margin-right: 12px;
-}
-
-select, input, button {
-	margin: 3px 0;
-	padding: 3px 6px;
-	background-color: white;
-	border: solid 1px maroon;
-	border-radius: 5px;
-}
-
-input[type="checkbox"], input[type="radio"] {
-	width: 18px;
-	height: 18px;
-	margin-right: 0;
-	vertical-align: middle;
-}
-
-select:hover:not(:disabled), input:hover:not(:disabled), button:hover:not(:disabled) {
-	cursor: pointer;
-}
-
-input:active:not(:disabled), button:active:not(:disabled), button.selected:not(:disabled) {
-	background-color: maroon;
-	color: white;
-}
-
-*:disabled, *:disabled * {
-	background: transparent;
-	color: maroon;
-}
-
-
-/*-----------------------------------------------------------------*/
+@import "bootstrap/dist/css/bootstrap.min.css";
 
 :root {
+	/* Färgvariabler */
+	--page-bg: #70171f;
+	--main-bg: #fff8dc;
+	--main-text: #1f2328;
+	--footer-bg: #70171f;
+	--header-bg: #70171f; 
+	--footer-text: #fff8dc;
+	--surface-fg: #fff8dc;
+	--sidebar-choosen-page: #ffffff;
+	--disabled-text: #6c757d; /* Variabel för inaktiverade element */
+	--canvas-btn-text: #fff8dc;
+	--canvas-btn-border: #fff8dc;
+	--card-btn-bg: #70171f;
+	--card-btn-text: #fff8dc;
+	--input-field-bg: #ffffff; /* Ändra bakgrundsfärg för inputfält och dropdowns */
+	--input-field-text: #1f2328;
+	--input-field-focus-ring: #1f232840; /* Färg för fokusring på inputfält och dropdowns, med transparens */
+	--field-border-focus:  #1f2328; /* Färg för kantlinje när inputfält och dropdowns är i fokus */
+	--canvas-bg: #ffffff;
+	--canvas-border: #70171f;
+	--canvas-status: #008000;
+	--canvas-title: #a52a2a;
+	--canvas-print-text: #0000ff;
+	--canvas-node-outline: #000000;
+	--canvas-shape-fill: #fff8dc;
+	--canvas-edges:#000000;
+	--canvas-edge-direction:#000000;	
+	--canvas-highlight: #cc0000;
+	--canvas-node-text: #000000;	
+	--canvas-quiz-marked: #008000;
+	--canvas-red-black-tree-red-node:#ffc0cb;
+	--canvas-red-black-tree-black-node: #d3d3d3;
+	--canvas-node-children: #000000; 
+	--canvas-array-fill: #d3d3d3;
+	--sorting-staple-primary: #3878ff;
+	--sorting-staple-secondary: #32a852;
+	--sorting-staple-marked: #ff55ff;
+	--sorting-staple-highlight: #ff6b6b;
+	--sorting-staple-disabled: #d3d3d3;
+
+	--gridline-debug: #d3d3d3;
+	--highlight-blue: #04d9ff;
+
+	/* Highlight colors */
+	--highlight-green: green; /*Sondre might change this to fit theme*/
+	--highlight-red: #C00;
+	--highlight-bright-green: rgb(0, 204, 0);
+	--highlight-bright-blue: rgb(0, 0, 204);
+	--highlight-primary: #1d4ed8;
+	--highlight-secondary: #16a34a;
+	--highlight-tertiary: #f59e0b;
+
+	/* Data visualization colors */
+	--row-normal-fill: white;
+	--row-normal-stroke: black;
+	--row-highlight-fill: rgb(247, 152, 152);
+	--row-highlight-stroke: red;
+
+	/* Card Animation Colors */
+	--card-avl-node: #0d6efd;
+	--card-avl-stroke: #343a40;
+	--card-heap-node: #28a745;
+	--card-heap-stroke: #343a40;
+	--card-sort-default: #3878ff;
+	--card-sort-active: #ff6b6b;
+	--card-sort-sorted: #32a852;
+	--card-graph-node-unvisited: #0d6efd;
+	--card-graph-node-visited: #28a745;
+	--card-graph-edge-unvisited: #ccc;
+	--card-graph-edge-visited: #999;
+	--card-graph-edge-highlighted: #ff6b6b;
+
+	--test: #09cdda;
 	--node-font-size: 100%;
 }
 
+body {
+	min-height: 100vh;
+	background-color: var(--page-bg);
+	color: var(--main-text);
+	--bs-body-color: var(--main-text);
+	--bs-body-bg: var(--main-bg);
+	padding-top: 56px;
+}
+
+body.theme-dark,svg.theme-dark {
+	--page-bg: #111418;
+	--main-bg: #1c2026;
+	--main-text: #e8ebef;
+	--footer-bg: #0d0f12;
+	--footer-text: #e8ebef;
+	--header-bg: #0d0f12;
+	--surface-fg: #e8ebef;
+	--sidebar-choosen-page: #f7fafc;
+	--disabled-fg: #9aa4af;
+	--canvas-btn-text: #e8ebef;
+    --canvas-btn-border: #e8ebef;
+	--card-btn-bg: #2b3440;
+	--card-btn-text: #e8ebef;
+	--input-field-bg: #1a212b;
+	--input-field-text: #e8ebef;
+	--field-border-focus: #e8ebef;
+	--input-field-focus-ring: #e8ebef40;
+	--canvas-bg: #232933;
+	--canvas-border: #0d0f12;
+	--canvas-status: #84e296;
+	--canvas-title: #ffb4a2;
+	--canvas-print-text: #9ec5ff;
+	--canvas-node-outline: #e8ebef;
+	--canvas-shape-fill: #2f3642;
+	--canvas-edges: #e8ebef;
+	--canvas-edge-direction: #e8ebef;
+	--canvas-quiz-marked: #84e296;
+	--canvas-highlight: #ff8a80;
+	--canvas-node-text: #e8ebef;
+	--canvas-red-black-tree-red-node: #b56576;
+	--canvas-red-black-tree-black-node: #8d99ae;
+	--canvas-array-fill: #6c757d;
+	--canvas-node-children: #e8ebef;
+	--sorting-staple-primary: #5a9dff;
+	--sorting-staple-secondary: #4ade80;
+	--sorting-staple-highlight: #ff8a80;
+	--sorting-staple-marked: #ff55ff;
+	--sorting-staple-disabled: #6c757d;
+	--gridline-debug: #6c757d;
+	--highlight-blue: #7bdff2;
+
+	/* Highlight colors */
+	--highlight-green: green; /*Sondre might change this to fit theme*/
+	--highlight-red: #ff8a80;
+	--highlight-bright-green: #57cc99;
+	--highlight-bright-blue: #5a9dff;
+	--highlight-primary: #5a9dff;
+	--highlight-secondary: #4ade80;
+	--highlight-tertiary: #ff8a80;
+
+	/* Data visualization colors */
+	--row-normal-fill: #1a212b;
+	--row-normal-stroke: #e8ebef;
+	--row-highlight-fill: #b56576;
+	--row-highlight-stroke: #ff8a80;
+
+	/* Card Animation Colors */
+	--card-avl-node: #5a9dff;
+	--card-avl-stroke: #e8ebef;
+	--card-heap-node: #4ade80;
+	--card-heap-stroke: #e8ebef;
+	--card-sort-default: #5a9dff;
+	--card-sort-active: #ff6b6b;
+	--card-sort-sorted: #4ade80;
+	--card-graph-node-unvisited: #5a9dff;
+	--card-graph-node-visited: #4ade80;
+	--card-graph-edge-unvisited: #555;
+	--card-graph-edge-visited: #888;
+	--card-graph-edge-highlighted: #ff8a80;
+
+	--test: #09cdda;
+}
+
+body.theme-colorblind,svg.theme-colorblind {
+	--page-bg: #0f2d4f;
+	--main-bg: #f4f7fb;
+	--main-text: #102a43;
+	--footer-bg: #0f2d4f;
+	--footer-text: #f4f7fb;
+	--header-bg: #0f2d4f;
+	--surface-fg: #f4f7fb;
+	--sidebar-choosen-page: #ffd166;
+	--disabled-fg: #486581;
+	--canvas-btn-text: #f4f7fb;
+	--canvas-btn-border: #f4f7fb;
+	--card-btn-bg: #0f2d4f;
+	--card-btn-text: #f4f7fb;
+	--input-field-bg: #ffffff;
+	--field-border-focus: #102a43;
+	--input-field-text: #102a43;
+	--input-field-focus-ring: #102a4340;
+	--canvas-bg: #ffffff;
+	--canvas-border: #0f2d4f;
+	--canvas-status: #009E73;
+	--canvas-title: #0072B2;
+	--canvas-print-text: #0072B2;
+	--canvas-node-outline: #000000;
+	--canvas-shape-fill: #56B4E9;
+	--canvas-edges: #000000;
+	--canvas-edge-direction: #000000;
+	--canvas-quiz-marked: #009E73;
+	--canvas-highlight: #e69f00;
+	--canvas-node-text: #000000;
+	--canvas-red-black-tree-red-node: #cc79a7;
+	--canvas-red-black-tree-black-node: #0072B2;
+	--canvas-array-fill: #56B4E9;
+	--canvas-node-children: #000000;
+	--sorting-staple-primary: #0072b2;
+	--sorting-staple-secondary: #cc79a7;
+	--sorting-staple-marked: #f0e442;
+	--sorting-staple-highlight: #e69f00;
+	--sorting-staple-disabled: #999999;
+	--gridline-debug: #9fb3c8;
+	--highlight-blue: #2563eb;
+
+	/* Highlight colors */
+	--highlight-green: #009E73;
+	--highlight-red: #D55E00;
+	--highlight-bright-green: #009E73;
+	--highlight-bright-blue: #56B4E9;
+	--highlight-primary: #0072B2;
+	--highlight-secondary: #009E73;
+	--highlight-tertiary: #E69F00;
+
+	/* Data visualization colors */
+	--row-normal-fill: #f4f7fb;
+	--row-normal-stroke: #000000;
+	--row-highlight-fill: #D55E00;
+	--row-highlight-stroke: #D55E00;
+
+	/* Card Animation Colors */
+	--card-avl-node: #0072B2;
+	--card-avl-stroke: #000000;
+	--card-heap-node: #009E73;
+	--card-heap-stroke: #000000;
+	--card-sort-default: #0072B2;
+	--card-sort-active: #E69F00;
+	--card-sort-sorted: #009E73;
+	--card-graph-node-unvisited: #56B4E9;
+	--card-graph-node-visited: #009E73;
+	--card-graph-edge-unvisited: #D3D3D3;
+	--card-graph-edge-visited: #E69F00;
+	--card-graph-edge-highlighted: #D55E00;
+
+	--test: #09cdda;
+}
+
+body.theme-dark.theme-colorblind, svg.theme-dark.theme-colorblind {
+	--page-bg: #111418;
+	--main-bg: #1c2026;
+	--main-text: #e8ebef;
+	--footer-bg: #0d0f12;
+	--footer-text: #e8ebef;
+	--header-bg: #0d0f12;
+	--surface-fg: #e8ebef;
+	--sidebar-choosen-page: #ffd166;
+	--disabled-fg: #9aa4af;
+	--canvas-btn-text: #e8ebef;
+	--canvas-btn-border: #e8ebef;
+	--card-btn-bg: #2b3440;
+	--card-btn-text: #e8ebef;
+	--input-field-bg: #1a212b;
+	--input-field-text: #e8ebef;
+	--field-border-focus: #ffd166;
+	--input-field-focus-ring: #ffd16640;
+	--canvas-bg: #232933;
+	--canvas-border: #0d0f12;
+	--canvas-status: #009E73;
+	--canvas-title: #56B4E9;
+	--canvas-print-text: #56B4E9;
+	--canvas-node-outline: #e8ebef;
+	--canvas-shape-fill: #0072B2;
+	--canvas-edges: #e8ebef;
+	--canvas-edge-direction: #e8ebef;
+	--canvas-quiz-marked: #009E73;
+	--canvas-highlight: #e69f00;
+	--canvas-node-text: #e8ebef;
+	--canvas-red-black-tree-red-node: #cc79a7;
+	--canvas-red-black-tree-black-node: #56B4E9;
+	--canvas-array-fill: #56B4E9;
+	--canvas-node-children: #e8ebef;
+	--sorting-staple-primary: #0072b2;
+	--sorting-staple-secondary: #cc79a7;
+	--sorting-staple-highlight: #e69f00; 
+	--sorting-staple-marked: #f0e442;
+	--sorting-staple-disabled: #999999;
+	--gridline-debug: #6c757d;
+	--highlight-blue: #90cdf4;
+
+	/* Highlight colors */
+	--highlight-green: #009E73; /*Okabe-Ito: Bluish Green*/
+	--highlight-red: #D55E00;
+	--highlight-bright-green: #009E73;
+	--highlight-bright-blue: #56B4E9;
+	--highlight-primary: #0072B2;
+	--highlight-secondary: #009E73;
+	--highlight-tertiary: #E69F00;
+
+	/* Data visualization colors */
+	--row-normal-fill: #1a212b;
+	--row-normal-stroke: #e8ebef;
+	--row-highlight-fill: #D55E00;
+	--row-highlight-stroke: #D55E00;
+
+	/* Card Animation Colors */
+	--card-avl-node: #0072B2;
+	--card-avl-stroke: #e8ebef;
+	--card-heap-node: #009E73;
+	--card-heap-stroke: #e8ebef;
+	--card-sort-default: #0072B2;
+	--card-sort-active: #E69F00;
+	--card-sort-sorted: #009E73;
+	--card-graph-node-unvisited: #56B4E9;
+	--card-graph-node-visited: #009E73;
+	--card-graph-edge-unvisited: #D3D3D3;
+	--card-graph-edge-visited: #E69F00;
+	--card-graph-edge-highlighted: #D55E00;
+
+	--test: #09cdda;
+}
+
+
+
+/* ===== HEADER / FOOTER / NAVIGATION ===== */
+.site-header,
+.site-footer {
+    background-color: var(--footer-bg);
+    color: var(--footer-text);
+}
+
+.site-header-title {
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.dsvis-navbar,
+.dsvis-offcanvas {
+    background-color: var(--header-bg);
+    color: var(--surface-fg);
+}
+
+.dsvis-offcanvas .nav-link,
+.dsvis-offcanvas .offcanvas-title {
+    color: var(--surface-fg);
+}
+
+.dsvis-offcanvas .list-group-item {
+    background-color: transparent;
+    border-color: var(--surface-fg);
+    color: var(--surface-fg);
+}
+
+.dsvis-offcanvas .list-group-item:hover,
+.dsvis-offcanvas .list-group-item:focus {
+    background-color: var(--surface-fg);
+    color: var(--header-bg);
+}
+
+.dsvis-offcanvas .list-group-item.active {
+    background-color: var(--sidebar-choosen-page);
+    border-color: var(--sidebar-choosen-page);
+    color: var(--header-bg);
+}
+
+.dsvis-offcanvas .nav-link.active,
+.dsvis-offcanvas .nav-link:hover,
+.dsvis-offcanvas .nav-link:focus {
+    color: var(--sidebar-choosen-page);
+}
+
+/* ===== BUTTONS ===== */
+/* .btn-outline-light {
+    --bs-btn-color: var(--canvas-btn-text);
+    --bs-btn-border-color: var(--canvas-btn-border);
+    --bs-btn-hover-color: var(--card-btn-text);
+    --bs-btn-hover-bg: var(--card-btn-bg);
+    --bs-btn-hover-border-color: var(--card-btn-bg);
+    --bs-btn-active-color: var(--card-btn-text);
+    --bs-btn-active-bg: var(--card-btn-bg);
+    --bs-btn-active-border-color: var(--card-btn-bg);
+} */
+
+.btn-outline-dark {
+    --bs-btn-color: var(--canvas-btn-text);
+    --bs-btn-border-color: var(--canvas-btn-border);
+    --bs-btn-hover-color: var(--card-btn-text);
+    --bs-btn-hover-bg: var(--card-btn-bg);
+    --bs-btn-hover-border-color: var(--card-btn-bg);
+    --bs-btn-active-color: var(--card-btn-text);
+    --bs-btn-active-bg: var(--card-btn-bg);
+    --bs-btn-active-border-color: var(--card-btn-bg);
+}
+
+.btn-dark {
+    --bs-btn-color: var(--card-btn-text);
+    --bs-btn-bg: var(--card-btn-bg);
+    --bs-btn-border-color: var(--card-btn-bg);
+    --bs-btn-hover-color: var(--card-btn-text);
+    --bs-btn-hover-bg: var(--card-btn-bg);
+    --bs-btn-hover-border-color: var(--card-btn-bg);
+    --bs-btn-active-color: var(--card-btn-text);
+    --bs-btn-active-bg: var(--card-btn-bg);
+    --bs-btn-active-border-color: var(--card-btn-bg);
+}
+
+/* ===== FORMS ===== */
+.form-control,
+.form-select {
+    background-color: var(--input-field-bg);
+    border-color: var(--field-border);
+    color: var(--input-field-text);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--input-field-bg);
+    border-color: var(--field-border-focus);
+    box-shadow: 0 0 0 0.2rem var(--input-field-focus-ring);
+    color: var(--input-field-text);
+}
+
+fieldset {
+    border: none;
+}
+
+/* ===== LAYOUT & STRUCTURE ===== */
+main {
+    background-color: var(--main-bg);
+    color: var(--main-text);
+}
+
+.main-shell {
+    min-height: calc(100vh - 56px - 4.5rem);
+}
+
+.page-content {
+    width: min(100%, 1000px);
+}
+
+.page-content-with-bottom-panel {
+    min-height: calc(100vh - 56px - 4.5rem);
+    display: flex;
+    flex-direction: column;
+}
+
+.page-link-grid .card {
+    border-color: var(--bs-border-color);
+}
+
+body.theme-dark .card {
+    background-color: var(--canvas-bg);
+}
+
+body.theme-dark.theme-colorblind .card {
+    background-color: var(--canvas-bg);
+}
+
+.page-link-grid .card-img-top {
+    height: 180px;
+    width: 100%;
+    object-fit: contain;
+    padding: 0;
+    background-color: var(--bs-tertiary-bg);
+}
+
+#avl-card-animation,
+#avl-card-animation svg {
+    height: 180px;
+    width: 100%;
+    background-color: var(--bs-tertiary-bg);
+}
+
+.selectorWrapper {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.site-title-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.formgroup {
+    white-space: nowrap;
+}
+
+*:disabled,
+*:disabled * {
+    color: var(--disabled-fg);
+}
+
+/* ===== ALGORITHM / GENERAL CONTROLS ===== */
+/* Gör att kontrollpanelerna matchar din CSS-fils färger */
+.algorithmControls, .generalControls {
+    background-color: var(--canvas-border);
+    color: var(--surface-fg);
+    border: 2px solid var(--canvas-border) !important;
+}
+
+.algorithmControls {
+    border-bottom: none !important;
+    border-radius: 8px 8px 0 0;
+}
+
+.generalControls {
+    border-top: none !important;
+    border-radius: 0 0 8px 8px;
+}
+
+/* ===== SVG CANVAS ===== */
+/* Tar bort eventuella marginaler som skapar glipor mellan röd ram och paneler */
 svg {
-	font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-radius: 0; /* Gör den rak så den passar mot panelerna */
+    background-color: var(--canvas-bg);
+    border: 2px solid var(--canvas-border);
+    width: 100%;
+    max-width: 1000px;
+    font-size: 20px;
+}
+
+svg,
+img,
+picture,
+video,
+canvas {
+    display: block;
+    max-width: 100%;
 }
 
 svg g {
-	font-size: var(--node-font-size);
+    font-size: 100%;
 }
 
+/* For pannable canvas */
+svg * {
+    user-select: none;
+    -moz-user-select: none;
+}
+
+body > main svg {
+    cursor: move;
+}
+
+/* ===== TYPOGRAPHY ===== */
 text {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 text.status-report {
-	fill: grey;
-	font-size: 80%;
+    fill: var(--status-fg);
+    font-size: 80%;
 }
+
 text.status-report.paused {
-	fill: brown;
+    fill: var(--status-paused);
 }
+
 text.status-report.running {
-	fill: green;
+    fill: var(--canvas-status);
 }
 
 text.title, text.message {
-	fill: brown;
+    fill: var(--canvas-title);
 }
+
 text.title {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 text.printer {
-	fill: blue;
-}
-
-circle, rect, polygon {
-    stroke: black;
-    fill: lemonchiffon;
-}
-
-path, line, polyline {
-    stroke: black;
-    fill: none;
-}
-
-svg .filled {
-	stroke: none;
-	fill: black;
-}
-
-svg .marked, svg .marked > * {
-    stroke: green;
-}
-
-svg .marked.filled, svg text.marked, svg .marked > .filled, svg .marked > text {
-	stroke: none;
-	fill: green;
-}
-
-svg .highlight, svg .highlight > * {
-    stroke: #C00;
-}
-
-svg .highlight.filled, svg text.highlight, svg .highlight > .filled, svg .highlight > text {
-	stroke: none;
-	fill: #C00;
-}
-
-svg .nofill {
-	fill: none;
-}
-
-svg .highlight-circle {
-	stroke: #C00;
-	fill: none;
+    fill: var(--canvas-print-text);
 }
 
 g text {
-	stroke: none;
-    fill: black;
+    stroke: none;
+    fill: var(--canvas-node-text);
     text-anchor: middle;
 }
 
 g text.avlheight {
-	font-size: 70%;
-}
-
-g.unfilled circle {
-	fill: none;
-}
-
-g.red circle {
-	fill: pink;
-}
-
-g.red.black circle {
-	fill: lightgrey;
+    font-size: 70%;
 }
 
 text.arrayindex > tspan {
-	font-size: 70%;
+    font-size: 70%;
+}
+
+/* ===== SVG SHAPES ===== */
+circle, rect, polygon {
+    stroke: var(--canvas-node-outline);
+    fill: var(--main-bg);
+}
+
+path, line, polyline {
+    stroke: var(--canvas-edges);
+    fill: none;
+}
+
+/* ===== SVG NODES & TREES ===== */
+g.unfilled circle {
+    fill: none;
+}
+
+g.red circle {
+    fill: var(--canvas-red-black-tree-red-node);
+}
+
+g.red.black circle {
+    fill: var(--canvas-red-black-tree-black-node);
 }
 
 rect.background.disabled {
-	fill: lightgray;
+    fill: var(--canvas-array-fill);
 }
 
-svg.shownullnodes .nullnode:not(.invisible) {
-	fill: black;
-	stroke: black;
+/* ===== SVG COLORS & STATES ===== */
+svg .filled {
+    stroke: none;
+    fill: var(--canvas-edge-direction);
 }
 
-line.gridline, svg .invisible, svg .nullnode {
-	fill: none;
+svg .marked, svg .marked > * {
+    stroke: var(--canvas-quiz-marked);
+}
+
+svg .marked.filled, svg text.marked, svg .marked > .filled, svg .marked > text {
+    stroke: none;
+    fill: var(--canvas-quiz-marked);
+}
+
+svg .highlight, svg .highlight > * {
+    stroke: var(--canvas-highlight);
+}
+
+svg .highlight.filled, svg text.highlight, svg .highlight > .filled, svg .highlight > text {
+    stroke: none;
+    fill: var(--canvas-highlight);
+}
+
+svg .marked.highlight > * {
+    stroke:none;
+    fill:var(--highlight-red)
+}
+
+svg .highlight-blue, svg .highlight-blue > * {
+    stroke: var(--highlight-bright-blue);
+    stroke: var(--highlight-blue);
+}
+
+svg .highlight-blue.filled, svg text.highlight-blue, svg .highlight-blue > .filled, svg .highlight-blue > text {
+    stroke: none;
+    fill: var(--highlight-bright-blue);
+}
+
+svg .marked.highlight-blue > * {
+    stroke:none;
+    fill:var(--highlight-bright-blue)
+}
+
+svg .highlight-green, svg .highlight-green > * {
+    stroke: var(--highlight-bright-green);
+	fill: var(--highlight-green);
+}
+
+svg .highlight-green.filled, svg text.highlight-green, svg .highlight-green > .filled, svg .highlight-green > text {
+    stroke: none;
+    fill: var(--highlight-bright-green);
+    stroke: var(--highlight-green);
+}
+
+svg .highlight-green.filled, svg text.highlight-green, svg .highlight-green > .filled, svg .highlight-green > text {
 	stroke: none;
+	fill: var(--highlight-green);
 }
 
-line.gridline {
-	stroke-width: 1;
+svg .marked.highlight-green > * {
+    stroke:none;
+    fill:var(--highlight-bright-green);
+	fill: var(--highlight-green);
+	stroke:none;
+	fill:var(--highlight-green);
 }
 
-svg.debug line.gridline, svg.debug .invisible, svg.debug .nullnode {
-    stroke: lightgray;
+svg .nofill {
+    fill: none;
 }
 
-/*PseudoCode*/
+/* ===== SVG HIGHLIGHT CIRCLES ===== */
+svg .highlight-circle {
+    stroke: var(--canvas-highlight);
+    fill: none;
+}
 
-.pseudoCode {
-    align-self: start;
-	margin-left: 50vh;
-	margin-top: 3vh;
-	display: inline-block;
-	width: 15%;
-	position: absolute;
+svg .highlight-circle-green {
+    stroke: var(--highlight-bright-green);
+    fill: none;
+}
+
+svg .highlight-circle-blue {
+    stroke: var(--highlight-bright-blue);
+    fill: none;
 }
 
 /*Highlights*/
 svg .highlightblue, svg .highlightblue > * {
-    stroke: #04D9FF;
+    stroke: var(--highlight-blue);
 }
 
 svg .highlightblue.filled, svg text.highlightblue, svg .highlightblue > .filled, svg .highlightblue > text {
-	stroke: none;
-	fill: #04D9FF;
+    stroke: none;
+    fill: var(--highlight-blue);
 }
 
+/* ===== SVG NODE HIGHLIGHTING (PRIMARY/SECONDARY/TERTIARY) ===== */
+/* Tree/binary node highlight classes */
+svg g.primaryHighlight > rect,
+svg g.primaryHighlight > circle {
+    stroke: var(--highlight-primary);
+    stroke-width: 3px;
+}
 
+svg g.primaryHighlight > text {
+    fill: var(--highlight-primary);
+}
 
+svg path.primaryHighlight, svg line.primaryHighlight {
+    stroke: var(--highlight-primary);
+}
+
+svg g.secondaryHighlight > rect,
+svg g.secondaryHighlight > circle {
+    stroke: var(--highlight-secondary);
+    stroke-width: 3px;
+}
+
+svg g.secondaryHighlight > text {
+    fill: var(--highlight-secondary);
+}
+
+svg path.secondaryHighlight, svg line.secondaryHighlight {
+    stroke: var(--highlight-secondary);
+}
+
+svg g.tertiaryHighlight > rect,
+svg g.tertiaryHighlight > circle {
+    stroke: var(--highlight-tertiary);
+    stroke-width: 3px;
+}
+
+svg g.tertiaryHighlight > text {
+    fill: var(--highlight-tertiary);
+}
+
+svg path.tertiaryHighlight, svg line.tertiaryHighlight {
+    stroke: var(--highlight-tertiary);
+}
+
+/* ===== DATA VISUALIZATION ===== */
+.row-normal {
+    fill:var(--row-normal-fill);
+    stroke:var(--row-normal-stroke);
+    fill-opacity:0.3
+}
+
+.row-highlight {
+    fill:var(--row-highlight-fill);
+    fill-opacity:0.3;
+    stroke: var(--row-highlight-stroke);
+}
+
+.edge-table .cell {
+    fill: var(--edge-fill);
+    stroke: var(--edge-stroke);
+    stroke-width: 1;
+}
+
+/* Sorting */
+.valueStaple > rect {
+    fill: var(--sorting-staple-primary);
+    stroke: none;
+}
+
+.valueStaple.disabled {
+    opacity: 0.5;
+}
+
+.valueStaple.disabled > rect {
+    fill: var(--sorting-staple-disabled);
+}
+
+svg .valueStaple.primaryHighlight > rect {
+    fill: var(--sorting-staple-highlight);	
+}
+
+svg .valueStaple.successHighlight > rect {
+    fill: var(--sorting-staple-secondary);
+}
+
+svg .valueStaple.infoHighlight > rect {
+    fill: var(--sorting-staple-marked);
+}
+
+/* ===== SPECIAL (GRIDLINE, NULL NODES, etc) ===== */
+line.gridline, svg .invisible, svg .nullnode {
+    fill: none;
+    stroke: none;
+}
+
+line.gridline {
+    stroke-width: 1;
+}
+
+svg.shownullnodes .nullnode:not(.invisible) {
+    fill: var(--canvas-node-children);
+    stroke: var(--canvas-node-children);
+}
+
+/* Allow null-child markers to be highlighted even when nullnodes are hidden by default */
+svg .nullnode.highlight {
+    stroke: var(--highlight-red);
+    fill: none;
+}
+
+svg.debug line.gridline, svg.debug .invisible, svg.debug .nullnode {
+    stroke: var(--gridline-debug);
+}
+
+/*PseudoCode*/
+.pseudoCode {
+    align-self: start;
+    margin-left: 50vh;
+    margin-top: 3vh;
+    display: inline-block;
+    width: 15%;
+    position: absolute;
+}
+#shuffleSelect option[value=""] {
+  display: none;
+}

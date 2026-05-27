@@ -1,3 +1,4 @@
+import { QuickSortAlgorithmControls } from "~/algorithm-controls/quick-sort-algorithm-controls";
 import { SortingAlgorithmControls } from "./algorithm-controls/sorting-algorithm-controls";
 import { Engine, SubmitFunction } from "./engine";
 import { initialiseEngine, querySelector, RecordOfEngines } from "./helpers";
@@ -5,6 +6,10 @@ import { InsertionSort } from "./sorting/InsertionSort";
 import { MergeSort } from "./sorting/MergeSort";
 import { QuickSort } from "./sorting/QuickSort";
 import { SelectionSort } from "./sorting/SelectionSort";
+import { BaseSorter } from "~/sorting/BaseSorter";
+import { BubbleSort } from "./sorting/BubbleSort";
+import { HeapSort } from "./sorting/HeapSort";
+import { RadixSort } from "./sorting/RadixSort";
 
 let right: number = 0;
 let down: number = 0;
@@ -14,6 +19,8 @@ let scrollSpeed: number = 1;
 export interface Sorter extends Engine {
     sort: SubmitFunction;
     insert: SubmitFunction;
+    setArraySize: (size: number) => void;
+    generateShuffledArray: (shuffleType: string) => number[];
 }
 
 const SORTING_CLASSES = {
@@ -21,77 +28,26 @@ const SORTING_CLASSES = {
     InsertionSort: InsertionSort,
     MergeSort: MergeSort,
     QuickSort: QuickSort,
+    BubbleSort: BubbleSort,
+    HeapSort: HeapSort,
+    RadixSort: RadixSort,
 } as const satisfies RecordOfEngines<Sorter>;
 
-const { engine: SortEngine, isBaseEngine } = initialiseEngine<Sorter>(
+const { engine, isBaseEngine } = initialiseEngine<Sorter>(
     "#sortingContainer",
     SORTING_CLASSES
 );
 
 if (!isBaseEngine) {
-    SortEngine.algorithmControls = new SortingAlgorithmControls(
-        SortEngine.container,
-        SortEngine
-    );
-}
-
-const zoomInButton = querySelector(".zoomIn");
-zoomInButton.addEventListener("click", () => zoomIn(true, SortEngine));
-
-const zoomOutButton = querySelector(".zoomOut");
-zoomOutButton.addEventListener("click", () => zoomIn(false, SortEngine));
-
-const scrollSpeedElement = querySelector<HTMLInputElement>(".scrollSpeed");
-scrollSpeedElement.addEventListener("change", (event: Event) => {
-    scrollSpeed = Number((event.target as HTMLInputElement).value);
-    (event.target as HTMLInputElement).blur();
-});
-
-const moveLeftButton = querySelector(".moveLeft");
-moveLeftButton.addEventListener("click", () => goRight(false, SortEngine));
-
-const moveRightButton = querySelector(".moveRight");
-moveRightButton.addEventListener("click", () => goRight(true, SortEngine));
-
-const moveUpButton = querySelector(".moveUp");
-moveUpButton.addEventListener("click", () => goDown(false, SortEngine));
-
-const moveDownButton = querySelector(".moveDown");
-moveDownButton.addEventListener("click", () => goDown(true, SortEngine));
-
-addEventListener("keydown", (event) => {
-    if (event.key === "ArrowDown") {
-        goDown(true, SortEngine);
-    } else if (event.key === "ArrowUp") {
-        goDown(false, SortEngine);
-    } else if (event.key === "ArrowRight") {
-        goRight(true, SortEngine);
-    } else if (event.key === "ArrowLeft") {
-        goRight(false, SortEngine);
+    if (engine instanceof QuickSort) {
+        engine.algorithmControls = new QuickSortAlgorithmControls(
+            engine.container,
+            engine
+        );
+    } else  {
+        engine.algorithmControls = new SortingAlgorithmControls(
+            engine.container,
+            engine
+        );
     }
-});
-
-function goRight(goingRight: boolean, engine: Engine) {
-    if (goingRight) {
-        right += scrollSpeed;
-    } else if (right > 0) {
-        right -= scrollSpeed;
-    }
-    engine.drawViewbox(right, down, zoom);
-}
-function goDown(goingDown: boolean, engine: Engine) {
-    if (goingDown) {
-        down += scrollSpeed;
-    } else if (down > 0) {
-        down -= scrollSpeed;
-    }
-    engine.drawViewbox(right, down, zoom);
-}
-function zoomIn(zoomingIn: boolean, engine: Engine) {
-    if (zoomingIn && zoom > 0.2) {
-        zoom -= 0.1;
-    } else if (zoom < 3) {
-        zoom += 0.1;
-    }
-    engine.drawViewbox(right, down, zoom);
 }

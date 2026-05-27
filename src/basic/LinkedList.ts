@@ -13,10 +13,12 @@ class Node<T> {
 // linkedlist class
 export default class LinkedList<T> {
     head: Node<T> | null;
+    tail: Node<T> | null;
     size: number;
 
     constructor() {
         this.head = null; // head will points to the first element of the list
+        this.tail = null;
         this.size = 0;
     }
 
@@ -28,17 +30,13 @@ export default class LinkedList<T> {
         // if the list is empty, then the new element should become the head
         if (!this.head) {
             this.head = node;
+            this.tail = node;
         }
-        // otherwise, traverse the list to find the last node and add the new element
+        // otherwise, use tail pointer to insert in the back
         else {
-            // to store current node
-            let current = this.head;
-            // iterate to the end of the list
-            while (current.next) {
-                current = current.next;
-            }
             // add node
-            current.next = node;
+            this.tail!.next = node;
+            this.tail = this.tail!.next;
         }
         this.size++;
     }
@@ -48,6 +46,9 @@ export default class LinkedList<T> {
         const node = new Node(element);
         node.next = this.head;
         this.head = node;
+        if(this.head.next === null){
+            this.tail = this.head;
+        }
         this.size++;
     }
 
@@ -60,6 +61,20 @@ export default class LinkedList<T> {
         } else {
             // creates a new node
             const node = new Node(element);
+            // If index is end of list, append through tail pointer
+            if (index == this.size){
+                if(this.tail){
+                    this.tail.next = node;
+                }else{
+                    this.tail = node
+                }
+                if(this.size==0){
+                    this.head = node; 
+                }
+                this.tail = node; 
+                this.size++;
+                return true;
+            }
             let current = this.head;
             let previous = null;
 
@@ -105,8 +120,11 @@ export default class LinkedList<T> {
                     previous = current;
                     current = current!.next;
                 }
-
+                if (current === this.tail){
+                    this.tail = previous;
+                }
                 previous!.next = current!.next; // remove the element
+                
             }
             this.size--;
             return true;
@@ -122,6 +140,9 @@ export default class LinkedList<T> {
         while (current != null) {
             // compare the given element with current element, if they match then remove the and return true
             if (current.element === element) {
+                if (current === this.tail){
+                    this.tail = current;
+                }
                 // if the element is the head, update the head to the next element
                 if (prev == null) {
                     this.head = current.next;
@@ -139,9 +160,9 @@ export default class LinkedList<T> {
     }
 
     // returns the element at the given index
-    get(index: number): T | null {
+    get(index: number): T  {
         if (index < 0 || index >= this.size) {
-            console.log("Invalid index.");
+            throw new Error("Invalid index")
         } else {
             let counter = 0;
             let current = this.head;
@@ -155,7 +176,8 @@ export default class LinkedList<T> {
                 current = current.next;
             }
         }
-        return null;
+         throw new Error("Unexpected state");
+        
     }
 
     // finds the index of the given element, if it is not found then return null

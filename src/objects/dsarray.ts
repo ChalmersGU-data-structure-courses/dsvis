@@ -154,8 +154,9 @@ export class DSArray extends G {
             }
         }
 
-        for (const bg of Object.values(this.$backgrounds)) {
-            if (!bg.css("stroke")) {
+        for (let i = 0; i < this.$backgrounds.length; i++) {
+            const bg = this.$backgrounds[i];
+            if (bg && !bg.css("stroke")) {
                 bg.back();
             }
         }

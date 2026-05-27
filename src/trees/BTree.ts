@@ -54,8 +54,8 @@ export class BTree extends Engine implements Collection {
         super(containerSelector);
     }
 
-    initialise(initialValues = null) {
-        this.initialValues = parseValues(initialValues);
+    initialise(initialValues: string[] = []) {
+        this.initialValues = initialValues;
         super.initialise();
     }
 

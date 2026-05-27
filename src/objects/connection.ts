@@ -52,6 +52,7 @@ export class Connection<T extends GraphNode | BTreeNode | LinkedNode> extends Pa
     }
 
     getBend(): number {
+        
         return this.$bend;
     }
 
@@ -99,6 +100,7 @@ export class Connection<T extends GraphNode | BTreeNode | LinkedNode> extends Pa
     }
 
     toString(): string {
+        console.log(this.$coords);
         return `${this.getStart()} --> ${this.getEnd()}`;
     }
 
@@ -140,6 +142,36 @@ export class Connection<T extends GraphNode | BTreeNode | LinkedNode> extends Pa
         }
         return this;
     }
+
+
+     setHighlightColor(enabled: boolean, cssClass?: string) {
+    const highlightClasses = [
+        'highlight',
+        'highlight-blue',
+        'highlight-green'
+    ];
+
+    
+    highlightClasses.forEach(c => this.removeClass(c));
+
+    const marker = this.reference<Element>("marker-end");
+
+    if (marker) {
+        marker.removeClass("marked");
+        highlightClasses.forEach(c => marker.removeClass(c));
+    }
+
+    
+    if (enabled) {
+        const classToApply = cssClass ?? 'highlight';
+
+        this.addClass(classToApply);
+
+        if (marker) {
+            marker.addClass("marked " + classToApply);
+        }
+    }
+}
 
     _getPath(): string {
         const C = this.$coords;

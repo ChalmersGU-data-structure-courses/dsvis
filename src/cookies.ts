@@ -42,7 +42,14 @@ export class Cookies {
                 throw new Error("Invalid cookie format");
             }
             const [documentCookieName, documentCookieValue] = splitCookie;
-            if (documentCookieName in this.cookies) {
+            if (
+                documentCookieName in this.cookies &&
+                // Only set the value of the element to the saved cookie value 
+                // if the saved value is one of the available options
+                [...this.cookies[documentCookieName].options].some(
+                    (option) => option.value === documentCookieValue
+                )
+            ) {
                 this.cookies[documentCookieName].value =
                     decodeURIComponent(documentCookieValue);
             }

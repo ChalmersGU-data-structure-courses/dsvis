@@ -71,8 +71,8 @@ export class BST<Node extends BinaryNode = BinaryNode>
         this.generalControls = new BSTGeneralControls(this.container, this);
     }
 
-    initialise(initialValues: string[] | null = null): this {
-        this.initialValues = parseValues(initialValues);
+    initialise(initialValues: string[] = []): this {
+        this.initialValues = initialValues;
         super.initialise();
         return this;
     }

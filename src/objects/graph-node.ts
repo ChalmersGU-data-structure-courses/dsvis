@@ -105,7 +105,7 @@ export class GraphNode extends TextCircle {
                 inEdge.remove();
             }
 
-            const edge = this.root()
+            const edge = this.engine().Svg
                 .put(new Connection(this, successor))
                 .init(
                     strokeWidth,
