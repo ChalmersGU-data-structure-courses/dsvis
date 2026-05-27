@@ -10,6 +10,7 @@ help:
 	@echo "  - After pushing to github, this will be the official website"
 
 website:
+	npm install
 	npx webpack --config webpack.config.js
 
 deploy: website

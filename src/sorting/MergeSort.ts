@@ -8,7 +8,7 @@ import { RecursiveSortingGeneralControls } from "~/general-controls/recursive-so
 
 export const MergeSortMessages = {
     sort: {
-        split: (a: string, b: string) => `Split ${a} from ${b}`,
+        split: (direction: 'left' | 'right') => `Recursively sort ${direction} subarray`,
         merge: `Merge subarrays`,
         move: (a: string) => `Move ${a} to upper array`,
         foundNewMin: (a: string) => `Found a smaller value ${a}`,
@@ -85,9 +85,8 @@ export class MergeSort extends BaseSorter implements Sorter {
                     this.setViewBoxCenter(arr.cx(), arr.cy(), true)
                                 
                 await this.pause(
-                    "merge.split",
-                    leftSubArr.getValues(),
-                    arr.getValues()
+                    "sort.split",
+                    "left"
                 );
                 
                 // Sort left subarray recursively
@@ -121,9 +120,8 @@ export class MergeSort extends BaseSorter implements Sorter {
                     .dy(rightSubArrDeltaMove.y);
                                 
                 await this.pause(
-                    "merge.split",
-                    rightSubArr.getValues(),
-                    arr.getValues()
+                    "sort.split",
+                    "right"
                 );
 
                 // Sort right subarray recursively

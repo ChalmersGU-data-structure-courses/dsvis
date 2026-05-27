@@ -7,3 +7,5 @@ This library is inspired by [David Galles' Javascript visualisations](https://ww
 The only external dependency is the [SVG.js library](https://svgjs.dev/), it is included in the `lib` directory.
 
 The code has been migrated to TypeScript, and it uses Webpack. To compile it you run `make website`, and then a website is created in the folder `public/`. To publish on Github, you run `make deploy` and push the changes.
+
+If you do not have `make`, you first have to run `npm install` to install all dependencies, and then you can compile the code into the `public/` folder using `npx webpack --config webpack.config.js`.
