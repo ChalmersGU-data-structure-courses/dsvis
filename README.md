@@ -40,9 +40,9 @@ Bachelor project, spring 2026:
 Justus Forsberg, Isak Hammarlund, Dennis Holmström, Josef Rasheed, Alireza Sharifi, and Frida Sundelin (2025).
 *Creating an Extendable and Developer-Friendly Framework for Visualizing Data Structures and Algorithms*.
 BSc thesis, Department of Computer Science and Engineering, University of Gothenburg and Chalmers University.
-([PDF, 2.3 MB](references/BSc-thesis-spring-2025.pdf))
+<https://hdl.handle.net/20.500.12380/311575>
 
 Sondre Fransson, Simon Grandin, Noel Heimer, Aron Sigfridsson, Shawn Wang, and Erik Zetterlund (2026).
 *Visualisering av datastrukturer och algoritmer: Utveckling av ett visualiseringsbibliotek till stöd för studenters inlärning*.
 BSc thesis, Department of Computer Science and Engineering, University of Gothenburg and Chalmers University.
-([PDF, 5.3 MB, in Swedish](references/BSc-thesis-spring-2026.pdf))
+<https://hdl.handle.net/20.500.12380/311725>
