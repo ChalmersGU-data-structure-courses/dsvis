@@ -2,27 +2,30 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 
 :root {
-	/* Färgvariabler */
+	/* Color variables */
 	--page-bg: #70171f;
 	--main-bg: #fff8dc;
 	--main-text: #1f2328;
-	--footer-bg: #70171f;
-	--header-bg: #70171f; 
-	--footer-text: #fff8dc;
+	--header-footer-bg: #70171f;
+	--header-footer-text: #fff8dc;
 	--surface-fg: #fff8dc;
+	--link-color: #70171f;
 	--sidebar-choosen-page: #ffffff;
-	--disabled-text: #6c757d; /* Variabel för inaktiverade element */
+	--disabled-fg: #6c757d;
 	--canvas-btn-text: #fff8dc;
 	--canvas-btn-border: #fff8dc;
 	--card-btn-bg: #70171f;
 	--card-btn-text: #fff8dc;
-	--input-field-bg: #ffffff; /* Ändra bakgrundsfärg för inputfält och dropdowns */
+	--input-field-bg: #ffffff;
 	--input-field-text: #1f2328;
-	--input-field-focus-ring: #1f232840; /* Färg för fokusring på inputfält och dropdowns, med transparens */
-	--field-border-focus:  #1f2328; /* Färg för kantlinje när inputfält och dropdowns är i fokus */
+	--input-field-border: #70171f;  /* #fff8dc; */
+	--input-field-border-focus: #fff8dc;
+	--checkbox-checked-bg: #70171f;
 	--canvas-bg: #ffffff;
 	--canvas-border: #70171f;
-	--canvas-status: #008000;
+	--canvas-status-idle: var(--disabled-fg);
+	--canvas-status-paused: #70171f;
+	--canvas-status-running: #008000;
 	--canvas-title: #a52a2a;
 	--canvas-print-text: #0000ff;
 	--canvas-node-outline: #000000;
@@ -46,7 +49,7 @@
 	--highlight-blue: #04d9ff;
 
 	/* Highlight colors */
-	--highlight-green: green; /*Sondre might change this to fit theme*/
+	--highlight-green: green;
 	--highlight-red: #C00;
 	--highlight-bright-green: rgb(0, 204, 0);
 	--highlight-bright-blue: rgb(0, 0, 204);
@@ -80,21 +83,23 @@
 
 body {
 	min-height: 100vh;
+	padding-top: 56px;
 	background-color: var(--page-bg);
 	color: var(--main-text);
 	--bs-body-color: var(--main-text);
 	--bs-body-bg: var(--main-bg);
-	padding-top: 56px;
+	--bs-link-color: var(--link-color);
+	--bs-navbar-brand-color: var(--header-footer-text);
 }
 
 body.theme-dark,svg.theme-dark {
 	--page-bg: #111418;
 	--main-bg: #1c2026;
 	--main-text: #e8ebef;
-	--footer-bg: #0d0f12;
-	--footer-text: #e8ebef;
-	--header-bg: #0d0f12;
+	--header-footer-bg: #0d0f12;
+	--header-footer-text: #e8ebef;
 	--surface-fg: #e8ebef;
+	--link-color: #e8ebef;
 	--sidebar-choosen-page: #f7fafc;
 	--disabled-fg: #9aa4af;
 	--canvas-btn-text: #e8ebef;
@@ -103,11 +108,14 @@ body.theme-dark,svg.theme-dark {
 	--card-btn-text: #e8ebef;
 	--input-field-bg: #1a212b;
 	--input-field-text: #e8ebef;
-	--field-border-focus: #e8ebef;
-	--input-field-focus-ring: #e8ebef40;
+	--input-field-border: #e8ebef;
+	--input-field-border-focus: #e8ebef;
+	--checkbox-checked-bg: #e8ebef;
 	--canvas-bg: #232933;
 	--canvas-border: #0d0f12;
-	--canvas-status: #84e296;
+	--canvas-status-idle: var(--disabled-fg);
+	--canvas-status-paused: #e8ebef;
+	--canvas-status-running: #84e296;
 	--canvas-title: #ffb4a2;
 	--canvas-print-text: #9ec5ff;
 	--canvas-node-outline: #e8ebef;
@@ -130,7 +138,7 @@ body.theme-dark,svg.theme-dark {
 	--highlight-blue: #7bdff2;
 
 	/* Highlight colors */
-	--highlight-green: green; /*Sondre might change this to fit theme*/
+	--highlight-green: green;
 	--highlight-red: #ff8a80;
 	--highlight-bright-green: #57cc99;
 	--highlight-bright-blue: #5a9dff;
@@ -165,10 +173,10 @@ body.theme-colorblind,svg.theme-colorblind {
 	--page-bg: #0f2d4f;
 	--main-bg: #f4f7fb;
 	--main-text: #102a43;
-	--footer-bg: #0f2d4f;
-	--footer-text: #f4f7fb;
-	--header-bg: #0f2d4f;
+	--header-footer-bg: #0f2d4f;
+	--header-footer-text: #f4f7fb;
 	--surface-fg: #f4f7fb;
+	--link-color: #0f2d4f;
 	--sidebar-choosen-page: #ffd166;
 	--disabled-fg: #486581;
 	--canvas-btn-text: #f4f7fb;
@@ -176,12 +184,15 @@ body.theme-colorblind,svg.theme-colorblind {
 	--card-btn-bg: #0f2d4f;
 	--card-btn-text: #f4f7fb;
 	--input-field-bg: #ffffff;
-	--field-border-focus: #102a43;
 	--input-field-text: #102a43;
-	--input-field-focus-ring: #102a4340;
+	--input-field-border: #102a43;
+	--input-field-border-focus: #102a43;
+	--checkbox-checked-bg: #e69f00;
 	--canvas-bg: #ffffff;
 	--canvas-border: #0f2d4f;
-	--canvas-status: #009E73;
+	--canvas-status-idle: var(--disabled-fg);
+	--canvas-status-paused: #102a43;
+	--canvas-status-running: #009E73;
 	--canvas-title: #0072B2;
 	--canvas-print-text: #0072B2;
 	--canvas-node-outline: #000000;
@@ -239,10 +250,10 @@ body.theme-dark.theme-colorblind, svg.theme-dark.theme-colorblind {
 	--page-bg: #111418;
 	--main-bg: #1c2026;
 	--main-text: #e8ebef;
-	--footer-bg: #0d0f12;
-	--footer-text: #e8ebef;
-	--header-bg: #0d0f12;
+	--header-footer-bg: #0d0f12;
+	--header-footer-text: #e8ebef;
 	--surface-fg: #e8ebef;
+	--link-color: #e8ebef;
 	--sidebar-choosen-page: #ffd166;
 	--disabled-fg: #9aa4af;
 	--canvas-btn-text: #e8ebef;
@@ -251,11 +262,14 @@ body.theme-dark.theme-colorblind, svg.theme-dark.theme-colorblind {
 	--card-btn-text: #e8ebef;
 	--input-field-bg: #1a212b;
 	--input-field-text: #e8ebef;
-	--field-border-focus: #ffd166;
-	--input-field-focus-ring: #ffd16640;
+	--input-field-border: #ffd166;
+	--input-field-border-focus: #ffd166;
+	--checkbox-checked-bg: #e8ebef;
 	--canvas-bg: #232933;
 	--canvas-border: #0d0f12;
-	--canvas-status: #009E73;
+	--canvas-status-idle: var(--disabled-fg);
+	--canvas-status-paused: #e8ebef;
+	--canvas-status-running: #009E73;
 	--canvas-title: #56B4E9;
 	--canvas-print-text: #56B4E9;
 	--canvas-node-outline: #e8ebef;
@@ -310,12 +324,17 @@ body.theme-dark.theme-colorblind, svg.theme-dark.theme-colorblind {
 }
 
 
+/* ==================== HEADER / FOOTER / NAVIGATION ==================== */
 
-/* ===== HEADER / FOOTER / NAVIGATION ===== */
 .site-header,
 .site-footer {
-    background-color: var(--footer-bg);
-    color: var(--footer-text);
+    background-color: var(--header-footer-bg);
+    color: var(--header-footer-text);
+}
+
+.site-header a,
+.site-footer a {
+	color: var(--header-footer-text);
 }
 
 .site-header-title {
@@ -325,7 +344,7 @@ body.theme-dark.theme-colorblind, svg.theme-dark.theme-colorblind {
 
 .dsvis-navbar,
 .dsvis-offcanvas {
-    background-color: var(--header-bg);
+    background-color: var(--header-footer-bg);
     color: var(--surface-fg);
 }
 
@@ -343,13 +362,13 @@ body.theme-dark.theme-colorblind, svg.theme-dark.theme-colorblind {
 .dsvis-offcanvas .list-group-item:hover,
 .dsvis-offcanvas .list-group-item:focus {
     background-color: var(--surface-fg);
-    color: var(--header-bg);
+    color: var(--header-footer-bg);
 }
 
 .dsvis-offcanvas .list-group-item.active {
     background-color: var(--sidebar-choosen-page);
     border-color: var(--sidebar-choosen-page);
-    color: var(--header-bg);
+    color: var(--header-footer-bg);
 }
 
 .dsvis-offcanvas .nav-link.active,
@@ -358,7 +377,12 @@ body.theme-dark.theme-colorblind, svg.theme-dark.theme-colorblind {
     color: var(--sidebar-choosen-page);
 }
 
-/* ===== BUTTONS ===== */
+/* ==================== BUTTONS / LINKS ==================== */
+
+a {
+	color: var(--link-color);
+}
+
 /* .btn-outline-light {
     --bs-btn-color: var(--canvas-btn-text);
     --bs-btn-border-color: var(--canvas-btn-border);
@@ -393,27 +417,34 @@ body.theme-dark.theme-colorblind, svg.theme-dark.theme-colorblind {
     --bs-btn-active-border-color: var(--card-btn-bg);
 }
 
-/* ===== FORMS ===== */
+/* ==================== FORMS ==================== */
+
 .form-control,
 .form-select {
     background-color: var(--input-field-bg);
-    border-color: var(--field-border);
+    border-color: var(--input-field-border);
     color: var(--input-field-text);
 }
 
 .form-control:focus,
 .form-select:focus {
-    background-color: var(--input-field-bg);
-    border-color: var(--field-border-focus);
-    box-shadow: 0 0 0 0.2rem var(--input-field-focus-ring);
-    color: var(--input-field-text);
+    border-color: var(--input-field-border-focus);
 }
 
 fieldset {
     border: none;
+	padding: 2px 4px;
 }
 
-/* ===== LAYOUT & STRUCTURE ===== */
+input[type="checkbox"] {
+	accent-color: var(--checkbox-checked-bg);
+    height: 1em;
+    width: 1em;
+    vertical-align: middle;
+}
+
+/* ==================== LAYOUT & STRUCTURE ==================== */
+
 main {
     background-color: var(--main-bg);
     color: var(--main-text);
@@ -475,11 +506,14 @@ body.theme-dark.theme-colorblind .card {
 }
 
 *:disabled,
-*:disabled * {
+*:disabled::placeholder,
+*:disabled *,
+*:disabled *::placeholder {
     color: var(--disabled-fg);
 }
 
-/* ===== ALGORITHM / GENERAL CONTROLS ===== */
+/* ==================== ALGORITHM / GENERAL CONTROLS ==================== */
+
 /* Gör att kontrollpanelerna matchar din CSS-fils färger */
 .algorithmControls, .generalControls {
     background-color: var(--canvas-border);
@@ -497,7 +531,8 @@ body.theme-dark.theme-colorblind .card {
     border-radius: 0 0 8px 8px;
 }
 
-/* ===== SVG CANVAS ===== */
+/* ==================== SVG CANVAS ==================== */
+
 /* Tar bort eventuella marginaler som skapar glipor mellan röd ram och paneler */
 svg {
     margin-top: 0;
@@ -533,22 +568,23 @@ body > main svg {
     cursor: move;
 }
 
-/* ===== TYPOGRAPHY ===== */
+/* ==================== TYPOGRAPHY ==================== */
+
 text {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 text.status-report {
-    fill: var(--status-fg);
+    fill: var(--canvas-status-idle);
     font-size: 80%;
 }
 
 text.status-report.paused {
-    fill: var(--status-paused);
+    fill: var(--canvas-status-paused);
 }
 
 text.status-report.running {
-    fill: var(--canvas-status);
+    fill: var(--canvas-status-running);
 }
 
 text.title, text.message {
@@ -577,7 +613,8 @@ text.arrayindex > tspan {
     font-size: 70%;
 }
 
-/* ===== SVG SHAPES ===== */
+/* ==================== SVG SHAPES ==================== */
+
 circle, rect, polygon {
     stroke: var(--canvas-node-outline);
     fill: var(--main-bg);
@@ -588,7 +625,8 @@ path, line, polyline {
     fill: none;
 }
 
-/* ===== SVG NODES & TREES ===== */
+/* ==================== SVG NODES & TREES ==================== */
+
 g.unfilled circle {
     fill: none;
 }
@@ -605,7 +643,8 @@ rect.background.disabled {
     fill: var(--canvas-array-fill);
 }
 
-/* ===== SVG COLORS & STATES ===== */
+/* ==================== SVG COLORS & STATES ==================== */
+
 svg .filled {
     stroke: none;
     fill: var(--canvas-edge-direction);
@@ -677,7 +716,8 @@ svg .nofill {
     fill: none;
 }
 
-/* ===== SVG HIGHLIGHT CIRCLES ===== */
+/* ==================== SVG HIGHLIGHT CIRCLES ==================== */
+
 svg .highlight-circle {
     stroke: var(--canvas-highlight);
     fill: none;
@@ -703,8 +743,9 @@ svg .highlightblue.filled, svg text.highlightblue, svg .highlightblue > .filled,
     fill: var(--highlight-blue);
 }
 
-/* ===== SVG NODE HIGHLIGHTING (PRIMARY/SECONDARY/TERTIARY) ===== */
+/* ==================== SVG NODE HIGHLIGHTING (PRIMARY/SECONDARY/TERTIARY) ==================== */
 /* Tree/binary node highlight classes */
+
 svg g.primaryHighlight > rect,
 svg g.primaryHighlight > circle {
     stroke: var(--highlight-primary);
@@ -747,7 +788,8 @@ svg path.tertiaryHighlight, svg line.tertiaryHighlight {
     stroke: var(--highlight-tertiary);
 }
 
-/* ===== DATA VISUALIZATION ===== */
+/* ==================== DATA VISUALIZATION ==================== */
+
 .row-normal {
     fill:var(--row-normal-fill);
     stroke:var(--row-normal-stroke);
@@ -792,7 +834,8 @@ svg .valueStaple.infoHighlight > rect {
     fill: var(--sorting-staple-marked);
 }
 
-/* ===== SPECIAL (GRIDLINE, NULL NODES, etc) ===== */
+/* ==================== SPECIAL (GRIDLINE, NULL NODES, etc) ==================== */
+
 line.gridline, svg .invisible, svg .nullnode {
     fill: none;
     stroke: none;

@@ -13,7 +13,7 @@ export class BSTGeneralControls extends EngineGeneralControls {
 
         this.generalControls.insertAdjacentHTML(
             "beforeend",
-            `<span class="formgroup"><label>
+            `<span class="formgroup d-inline-flex flex-wrap align-items-center gap-2"><label>
                 <input class="showNullNodes" type="checkbox"/> Show null nodes
             </label></span>`
         );

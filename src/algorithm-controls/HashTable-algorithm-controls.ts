@@ -17,7 +17,7 @@ export class HashTableAlgorithmControl extends CollectionAlgorithmControl {
             "beforeend",
             `<span class="formgroup d-inline-flex flex-wrap align-items-center gap-2"><label>
                 Hash Function:
-                <select id="hashFunction" class="HashFunctionSelector disableWhenRunning">
+                <select id="hashFunction" class="HashFunctionSelector disableWhenRunning form-select form-select-sm w-auto d-inline-block">
                 <option value="0">Java HashCode</option>
                 <option value="1">First Character</option>
                 <option value="2">Sum of Characters</option>
